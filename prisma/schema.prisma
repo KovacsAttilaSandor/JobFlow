@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum JobStatus {
+  Saved
+  Applied
+  Interviewing
+  Offer
+  Rejected
+  OnHold
+}
+
+enum EventType {
+  Interview
+  TaskDeadline
+  FollowUp
+  Other
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  jobs        Job[]
+  events      Event[]
+  cv          Cv?
+  matchScores MatchScore[]
+}
+
+model Job {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  title     String
+  company   String
+  location  String?
+  salaryMin Int?
+  salaryMax Int?
+  currency  String?
+
+  jobUrl String?
+  source String?
+
+  description String?
+
+  status JobStatus @default(Saved)
+
+  aiSummary          String?
+  aiSummaryUpdatedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  statusHistory JobStatusHistory[]
+  events        Event[]
+  matchScores   MatchScore[]
+}
+
+model JobStatusHistory {
+  id    String @id @default(cuid())
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  fromStatus JobStatus?
+  toStatus   JobStatus
+
+  note      String?
+  changedAt DateTime @default(now())
+}
+
+model Event {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  jobId String?
+  job   Job?    @relation(fields: [jobId], references: [id])
+
+  type        EventType
+  title       String
+  description String?
+
+  location    String?
+  meetingLink String?
+
+  startTime DateTime
+  endTime   DateTime?
+
+  reminderMinutesBefore Int?
+
+  createdAt DateTime @default(now())
+}
+
+model Cv {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  rawText String
+  fileUrl String?
+
+  updatedAt DateTime @updatedAt
+}
+
+model MatchScore {
+  id String @id @default(cuid())
+
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  score Int
+
+  summary   String
+  strengths String
+  gaps      String
+
+  createdAt DateTime @default(now())
+}
