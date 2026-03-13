@@ -2,13 +2,66 @@ import { PrismaClient } from "@/app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
-  })
+  connectionString: process.env.DATABASE_URL,
+});
 
-const prisma = new PrismaClient({adapter});
+const prisma = new PrismaClient({ adapter });
+
+const companies = [
+  "Stripe",
+  "Vercel",
+  "Notion",
+  "Linear",
+  "Spotify",
+  "Shopify",
+  "Airbnb",
+  "Google",
+  "Meta",
+  "OpenAI",
+  "Netflix",
+  "Uber",
+  "Slack",
+  "Figma",
+];
+
+const titles = [
+  "Frontend Engineer",
+  "Software Engineer",
+  "Fullstack Developer",
+  "React Developer",
+  "Product Engineer",
+  "Typescript Engineer",
+  "Senior Frontend Engineer",
+  "Frontend Developer",
+];
+
+const locations = [
+  "Remote",
+  "Berlin",
+  "London",
+  "Stockholm",
+  "Zurich",
+  "Amsterdam",
+  "San Francisco",
+];
+
+const statuses = [
+  "Saved",
+  "Applied",
+  "Interviewing",
+  "Offer",
+  "Rejected",
+] as const;
+
+function randomItem(arr: any[]) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomDate(days: number) {
+  return new Date(Date.now() + Math.random() * days * 86400000);
+}
 
 async function main() {
-
   const user = await prisma.user.findFirst();
 
   if (!user) {
@@ -16,84 +69,66 @@ async function main() {
     return;
   }
 
-  const stripeJob = await prisma.job.create({
-    data: {
-      userId: user.id,
-      title: "Frontend Engineer",
-      company: "Stripe",
-      location: "Remote",
-      status: "Applied",
-      description: "React + Typescript position",
-    },
-  });
+  console.log("Cleaning old data...");
 
-  const notionJob = await prisma.job.create({
-    data: {
-      userId: user.id,
-      title: "Product Engineer",
-      company: "Notion",
-      location: "Berlin",
-      status: "Interviewing",
-    },
-  });
+  await prisma.jobStatusHistory.deleteMany();
+  await prisma.event.deleteMany();
+  await prisma.matchScore.deleteMany();
+  await prisma.job.deleteMany();
 
-  const vercelJob = await prisma.job.create({
-    data: {
-      userId: user.id,
-      title: "Fullstack Developer",
-      company: "Vercel",
-      location: "Remote",
-      status: "Saved",
-    },
-  });
+  console.log("Generating jobs...");
 
-  const linearJob = await prisma.job.create({
-    data: {
-      userId: user.id,
-      title: "Software Engineer",
-      company: "Linear",
-      location: "Remote",
-      status: "Rejected",
-    },
-  });
+  const jobs = [];
 
-  await prisma.event.createMany({
-    data: [
-      {
+  for (let i = 0; i < 50; i++) {
+    const status = randomItem(statuses);
+
+    const job = await prisma.job.create({
+      data: {
         userId: user.id,
-        jobId: notionJob.id,
-        type: "Interview",
-        title: "Technical interview",
-        startTime: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        title: randomItem(titles),
+        company: randomItem(companies),
+        location: randomItem(locations),
+        status,
+        description: "Sample job description for testing the dashboard and board.",
       },
-      {
-        userId: user.id,
-        jobId: stripeJob.id,
-        type: "FollowUp",
-        title: "Follow-up email",
-        startTime: new Date(Date.now() + 1000 * 60 * 60 * 48),
-      },
-    ],
-  });
+    });
 
-  await prisma.jobStatusHistory.createMany({
-    data: [
-      {
-        jobId: stripeJob.id,
-        toStatus: "Applied",
-      },
-      {
-        jobId: notionJob.id,
-        toStatus: "Interviewing",
-      },
-      {
-        jobId: linearJob.id,
-        toStatus: "Rejected",
-      },
-    ],
-  });
+    jobs.push(job);
 
-  console.log("Seed data created.");
+    await prisma.jobStatusHistory.create({
+      data: {
+        jobId: job.id,
+        toStatus: status,
+      },
+    });
+
+    if (Math.random() > 0.7) {
+      await prisma.event.create({
+        data: {
+          userId: user.id,
+          jobId: job.id,
+          type: "Interview",
+          title: "Interview with " + job.company,
+          startTime: randomDate(7),
+        },
+      });
+    }
+
+    if (Math.random() > 0.85) {
+      await prisma.event.create({
+        data: {
+          userId: user.id,
+          jobId: job.id,
+          type: "FollowUp",
+          title: "Follow-up email",
+          startTime: randomDate(5),
+        },
+      });
+    }
+  }
+
+  console.log("Seed completed.");
 }
 
 main().finally(() => prisma.$disconnect());

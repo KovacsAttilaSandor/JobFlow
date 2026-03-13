@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
+import JobDetailActions from "@/components/job-detail-actions";
 
 function getStatusClasses(status: string) {
   switch (status) {
@@ -113,19 +114,11 @@ export default async function JobDetailPage({ params }: PageProps) {
               </span>
             </div>
           </div>
-
-          <div className="flex gap-3">
-            <a
-              href={`/jobs/${job.id}/edit`}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
-            >
-              Szerkesztés
-            </a>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
           <div className="xl:col-span-2 space-y-6">
+            <JobDetailActions jobId={job.id} currentStatus={job.status} />
             <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
               <h2 className="text-xl font-semibold">Állás részletei</h2>
 

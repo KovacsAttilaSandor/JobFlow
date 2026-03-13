@@ -13,6 +13,8 @@ export default function DashboardNavbar() {
   const base =
     "rounded-xl px-3 py-2 text-sm transition";
 
+  const isBoard = pathname === "/jobs/board"
+
   const active =
     "bg-white/10 text-white";
 
@@ -22,7 +24,7 @@ export default function DashboardNavbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        
+
         <div className="flex items-center gap-8">
           <a
             href="/dashboard"
@@ -32,33 +34,35 @@ export default function DashboardNavbar() {
           </a>
 
           <nav className="hidden items-center gap-2 md:flex">
-            
+
             <a
               href="/dashboard"
-              className={`${base} ${
-                isDashboard ? active : inactive
-              }`}
+              className={`${base} ${isDashboard ? active : inactive
+                }`}
             >
               Dashboard
             </a>
 
             <a
               href="/jobs"
-              className={`${base} ${
-                isJobs && !isNewJob ? active : inactive
-              }`}
+              className={`${base} ${isJobs && !isNewJob && !isBoard? active : inactive
+                }`}
             >
               Állások
             </a>
 
             <a
               href="/jobs/new"
-              className={`${base} ${
-                isNewJob ? active : inactive
-              }`}
+              className={`${base} ${isNewJob ? active : inactive
+                }`}
             >
               Új állás
             </a>
+
+            <a
+              href="/jobs/board"
+              className={`${base} ${isBoard && !isNewJob ? active : inactive
+              }`}>Board</a>
 
           </nav>
         </div>
