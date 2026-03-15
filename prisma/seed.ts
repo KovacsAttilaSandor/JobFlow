@@ -51,7 +51,7 @@ const statuses = [
   "Interviewing",
   "Offer",
   "Rejected",
-] as const;
+];
 
 function randomItem(arr: any[]) {
   return arr[Math.floor(Math.random() * arr.length)];

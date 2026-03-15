@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import LogoutButton from "./logout-button";
 
 export default function DashboardNavbar() {
   const pathname = usePathname();
@@ -14,6 +15,8 @@ export default function DashboardNavbar() {
     "rounded-xl px-3 py-2 text-sm transition";
 
   const isBoard = pathname === "/jobs/board"
+
+  const isSettings = pathname === "/settings"
 
   const active =
     "bg-white/10 text-white";
@@ -45,7 +48,7 @@ export default function DashboardNavbar() {
 
             <a
               href="/jobs"
-              className={`${base} ${isJobs && !isNewJob && !isBoard? active : inactive
+              className={`${base} ${isJobs && !isNewJob && !isBoard ? active : inactive
                 }`}
             >
               Állások
@@ -62,7 +65,13 @@ export default function DashboardNavbar() {
             <a
               href="/jobs/board"
               className={`${base} ${isBoard && !isNewJob ? active : inactive
-              }`}>Board</a>
+                }`}>Board</a>
+
+            <a href="/settings"
+              className={`${base} ${isSettings ? active : inactive}`}
+            >Settings</a>
+
+            <LogoutButton/>
 
           </nav>
         </div>

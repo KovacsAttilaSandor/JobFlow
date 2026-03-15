@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const statuses = [
   "Saved",
@@ -10,12 +11,37 @@ const statuses = [
   "Offer",
   "Rejected",
   "OnHold",
-];
+] as const;
 
 type Props = {
   jobId: string;
   currentStatus: string;
 };
+
+function getStatusButtonClasses(item: string, active: boolean) {
+  const base =
+    "rounded-2xl border px-3 py-2 text-xs font-medium transition";
+  if (!active) {
+    return `${base} border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white`;
+  }
+
+  switch (item) {
+    case "Saved":
+      return `${base} border-yellow-400/20 bg-yellow-500/15 text-yellow-300`;
+    case "Applied":
+      return `${base} border-blue-400/20 bg-blue-500/15 text-blue-300`;
+    case "Interviewing":
+      return `${base} border-purple-400/20 bg-purple-500/15 text-purple-300`;
+    case "Offer":
+      return `${base} border-green-400/20 bg-green-500/15 text-green-300`;
+    case "Rejected":
+      return `${base} border-red-400/20 bg-red-500/15 text-red-300`;
+    case "OnHold":
+      return `${base} border-slate-400/20 bg-slate-500/15 text-slate-300`;
+    default:
+      return `${base} border-white/10 bg-white/10 text-white`;
+  }
+}
 
 export default function JobDetailActions({
   jobId,
@@ -26,9 +52,14 @@ export default function JobDetailActions({
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  async function handleStatusChange(newStatus: string) {
-    if (newStatus === currentStatus) return;
+  useEffect(() => {
+    setStatus(currentStatus);
+  }, [currentStatus]);
 
+  async function handleStatusChange(newStatus: string) {
+    if (newStatus === status) return;
+
+    const previous = status;
     setStatus(newStatus);
     setIsSaving(true);
 
@@ -50,7 +81,7 @@ export default function JobDetailActions({
       router.refresh();
     } catch (error) {
       console.error(error);
-      setStatus(currentStatus);
+      setStatus(previous);
       alert("Nem sikerült menteni a státuszt.");
     } finally {
       setIsSaving(false);
@@ -86,49 +117,56 @@ export default function JobDetailActions({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-        <h2 className="text-xl font-semibold">Műveletek</h2>
-
-        <div className="mt-5 space-y-4">
-          <div>
-            <label className="mb-2 block text-sm text-slate-400">
-              Státusz módosítása
-            </label>
-
-            <select
-              value={status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              disabled={isSaving}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-sm text-white outline-none"
-            >
-              {statuses.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-
-            {isSaving && (
-              <p className="mt-2 text-xs text-slate-400">Mentés...</p>
-            )}
-          </div>
-
-          <a
-            href={`/jobs/${jobId}/edit`}
-            className="block w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-white/10"
-          >
-            Állás szerkesztése
-          </a>
-
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="w-full rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-60"
-          >
-            {isDeleting ? "Törlés..." : "Állás törlése"}
-          </button>
+    <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5 shadow-xl backdrop-blur">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+            Műveletek
+          </p>
+          <h3 className="mt-2 text-lg font-semibold text-white">
+            Állás kezelése
+          </h3>
+          <p className="mt-1 text-sm text-slate-400">
+            Státusz váltása, szerkesztés és törlés.
+          </p>
         </div>
+
+        {isSaving && (
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+            Mentés...
+          </span>
+        )}
+      </div>
+
+      <div className="mt-5 grid grid-cols-2 gap-2">
+        {statuses.map((item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => handleStatusChange(item)}
+            disabled={isSaving}
+            className={getStatusButtonClasses(item, status === item)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+        <Link
+          href={`/jobs/${jobId}/edit`}
+          className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-white/10"
+        >
+          Állás szerkesztése
+        </Link>
+
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className="flex-1 rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-60"
+        >
+          {isDeleting ? "Törlés..." : "Állás törlése"}
+        </button>
       </div>
     </div>
   );

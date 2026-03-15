@@ -43,33 +43,34 @@ model User {
 }
 
 model Job {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
 
-  title     String
-  company   String
-  location  String?
-  salaryMin Int?
-  salaryMax Int?
-  currency  String?
+  title               String
+  company             String
+  location            String?
+  salaryMin           Int?
+  salaryMax           Int?
+  currency            String?
+  jobUrl              String?
+  source              String?
+  description         String?
 
-  jobUrl String?
-  source String?
+  status              JobStatus @default(Saved)
 
-  description String?
+  aiSummary           String?
+  aiSummaryUpdatedAt  DateTime?
 
-  status JobStatus @default(Saved)
+  aiCoverLetter       String?
+  aiCoverLetterUpdatedAt DateTime?
 
-  aiSummary          String?
-  aiSummaryUpdatedAt DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  statusHistory JobStatusHistory[]
-  events        Event[]
-  matchScores   MatchScore[]
+  statusHistory       JobStatusHistory[]
+  events              Event[]
+  matchScores         MatchScore[]
 }
 
 model JobStatusHistory {
