@@ -109,14 +109,14 @@ model Event {
 }
 
 model Cv {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  rawText         String
+  parsedData      String?
+  parsedUpdatedAt DateTime?
+  updatedAt       DateTime @updatedAt
 
-  rawText String
-  fileUrl String?
-
-  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id])
 }
 
 model MatchScore {

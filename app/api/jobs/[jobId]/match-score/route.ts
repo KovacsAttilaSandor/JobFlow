@@ -3,6 +3,17 @@ import { prisma } from "@/lib/prisma";
 import { gemini } from "@/lib/gemini";
 import { NextResponse } from "next/server";
 
+type ParsedCvProfile = {
+  headline: string;
+  summary: string;
+  skills: string[];
+  technologies: string[];
+  experience: string[];
+  education: string[];
+  languages: string[];
+  highlights: string[];
+};
+
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ jobId: string }> }
@@ -54,6 +65,44 @@ export async function POST(
     );
   }
 
+  let parsedCv: ParsedCvProfile | null = null;
+
+  if (cv.parsedData) {
+    try {
+      parsedCv = JSON.parse(cv.parsedData);
+    } catch (error) {
+      console.error("PARSED_CV_JSON_ERROR", error);
+    }
+  }
+
+  const parsedCvSection = parsedCv
+    ? `
+STRUCTURED CV PROFILE:
+Headline: ${parsedCv.headline || "N/A"}
+
+Summary:
+${parsedCv.summary || "N/A"}
+
+Skills:
+${parsedCv.skills?.join(", ") || "N/A"}
+
+Technologies:
+${parsedCv.technologies?.join(", ") || "N/A"}
+
+Experience:
+${parsedCv.experience?.join("\n- ") || "N/A"}
+
+Education:
+${parsedCv.education?.join("\n- ") || "N/A"}
+
+Languages:
+${parsedCv.languages?.join(", ") || "N/A"}
+
+Highlights:
+${parsedCv.highlights?.join("\n- ") || "N/A"}
+`
+    : "STRUCTURED CV PROFILE: Not available.";
+
   const prompt = `
 You are evaluating how well a candidate CV matches a job description.
 
@@ -72,12 +121,17 @@ Rules:
 - summary: 2-4 concise sentences
 - no markdown
 - no extra text before or after the JSON
+- prefer the structured CV profile when available
+- use the raw CV text as supporting context
+- be realistic and do not invent experience
 - language: hungarian
 
 JOB DESCRIPTION:
 ${job.description}
 
-CV:
+${parsedCvSection}
+
+RAW CV TEXT:
 ${cv.rawText}
 `;
 

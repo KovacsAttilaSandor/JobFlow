@@ -6,6 +6,28 @@ import { PDFParse } from "pdf-parse";
 
 PDFParse.setWorker(getData());
 
+export async function GET() {
+  const session = await auth();
+
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  const cv = await prisma.cv.findUnique({
+    where: { userId: user.id },
+  });
+
+  return NextResponse.json(cv);
+}
+
 export async function POST(req: Request) {
   const session = await auth();
 
@@ -31,7 +53,10 @@ export async function POST(req: Request) {
   }
 
   if (file.type !== "application/pdf") {
-    return NextResponse.json({ error: "Only PDF files are allowed" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Only PDF files are allowed" },
+      { status: 400 }
+    );
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -52,11 +77,35 @@ export async function POST(req: Request) {
     },
     update: {
       rawText: text,
+      parsedData: null,
+      parsedUpdatedAt: null,
     },
     create: {
       userId: user.id,
       rawText: text,
     },
+  });
+
+  return NextResponse.json({ success: true });
+}
+
+export async function DELETE() {
+  const session = await auth();
+
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  await prisma.cv.deleteMany({
+    where: { userId: user.id },
   });
 
   return NextResponse.json({ success: true });
