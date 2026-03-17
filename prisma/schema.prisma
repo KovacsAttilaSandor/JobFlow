@@ -40,6 +40,7 @@ model User {
   events      Event[]
   cv          Cv?
   matchScores MatchScore[]
+  tags        Tag[]
 }
 
 model Job {
@@ -65,12 +66,39 @@ model Job {
   aiCoverLetter       String?
   aiCoverLetterUpdatedAt DateTime?
 
+  aiInterviewPrep     String?
+  aiInterviewPrepUpdatedAt DateTime?
+
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
   statusHistory       JobStatusHistory[]
   events              Event[]
   matchScores         MatchScore[]
+  tags                JobTag[]
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  name      String
+  createdAt DateTime @default(now())
+
+  jobs      JobTag[]
+
+  @@unique([userId, name])
+}
+
+model JobTag {
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([jobId, tagId])
 }
 
 model JobStatusHistory {

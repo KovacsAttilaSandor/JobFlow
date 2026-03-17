@@ -2,6 +2,36 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+function normalizeOptionalString(value: unknown) {
+    if (typeof value !== "string") return undefined;
+    const trimmed = value.trim();
+    return trimmed.length === 0 ? null : trimmed;
+}
+
+function normalizeOptionalInt(value: unknown) {
+    if (value === null) return null;
+    if (typeof value === "number" && Number.isFinite(value)) return Math.trunc(value);
+    if (typeof value === "string") {
+        const trimmed = value.trim();
+        if (!trimmed) return null;
+        const parsed = Number.parseInt(trimmed, 10);
+        if (Number.isFinite(parsed)) return parsed;
+        return null;
+    }
+    return undefined;
+}
+
+function normalizeTags(value: unknown) {
+    if (!Array.isArray(value)) return undefined;
+    const tags = value
+        .map((item) => (typeof item === "string" ? item.trim() : ""))
+        .map((item) => item.replace(/\s+/g, " ").trim())
+        .filter(Boolean)
+        .map((item) => item.toLowerCase())
+        .slice(0, 12);
+    return tags;
+}
+
 export async function GET(
     req: Request,
     { params }: { params: Promise<{ jobId: string }> }
@@ -26,6 +56,13 @@ export async function GET(
         where: {
             id: jobId,
             userId: user.id,
+        },
+        include: {
+            tags: {
+                include: {
+                    tag: { select: { name: true } },
+                },
+            },
         },
     });
 
@@ -73,12 +110,46 @@ export async function PUT(
             id: jobId,
         },
         data: {
-            title: body.title ?? existingJob.title,
-            company: body.company ?? existingJob.company,
-            location: body.location ?? existingJob.location,
-            jobUrl: body.jobUrl ?? existingJob.jobUrl,
-            description: body.description ?? existingJob.description,
+            title: typeof body.title === "string" ? body.title : existingJob.title,
+            company: typeof body.company === "string" ? body.company : existingJob.company,
+            location: normalizeOptionalString(body.location) ?? existingJob.location,
+            source: normalizeOptionalString(body.source) ?? existingJob.source,
+            jobUrl: normalizeOptionalString(body.jobUrl) ?? existingJob.jobUrl,
+            currency: normalizeOptionalString(body.currency) ?? existingJob.currency,
+            salaryMin: normalizeOptionalInt(body.salaryMin) ?? existingJob.salaryMin,
+            salaryMax: normalizeOptionalInt(body.salaryMax) ?? existingJob.salaryMax,
+            description: normalizeOptionalString(body.description) ?? existingJob.description,
             status: body.status ?? existingJob.status,
+            ...(normalizeTags(body.tags) !== undefined
+                ? {
+                    tags: {
+                        deleteMany: {},
+                        create: normalizeTags(body.tags)!.map((name) => ({
+                            tag: {
+                                connectOrCreate: {
+                                    where: {
+                                        userId_name: {
+                                            userId: user.id,
+                                            name,
+                                        },
+                                    },
+                                    create: {
+                                        userId: user.id,
+                                        name,
+                                    },
+                                },
+                            },
+                        })),
+                    },
+                }
+                : {}),
+        },
+        include: {
+            tags: {
+                include: {
+                    tag: { select: { name: true } },
+                },
+            },
         },
     });
 

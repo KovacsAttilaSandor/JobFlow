@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   DndContext,
   useDraggable,
@@ -25,7 +26,43 @@ type Job = {
   jobUrl?: string | null;
   description?: string | null;
   status: string;
+  createdAt?: string;
 };
+
+function getColumnTheme(status: string) {
+  switch (status) {
+    case "Saved":
+      return {
+        pill: "border-yellow-400/20 bg-yellow-500/10 text-yellow-300",
+        glow: "from-yellow-500/10",
+      };
+    case "Applied":
+      return {
+        pill: "border-blue-400/20 bg-blue-500/10 text-blue-300",
+        glow: "from-blue-500/10",
+      };
+    case "Interviewing":
+      return {
+        pill: "border-purple-400/20 bg-purple-500/10 text-purple-300",
+        glow: "from-purple-500/10",
+      };
+    case "Offer":
+      return {
+        pill: "border-green-400/20 bg-green-500/10 text-green-300",
+        glow: "from-green-500/10",
+      };
+    case "Rejected":
+      return {
+        pill: "border-red-400/20 bg-red-500/10 text-red-300",
+        glow: "from-red-500/10",
+      };
+    default:
+      return {
+        pill: "border-white/10 bg-white/5 text-slate-300",
+        glow: "from-white/5",
+      };
+  }
+}
 
 export default function JobBoardPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -99,43 +136,105 @@ export default function JobBoardPage() {
     persistStatus(activeJobId, targetStatus);
   }
 
+  const totalJobs = jobs.length;
+
+  const stats = useMemo(() => {
+    return statuses.map((status) => ({
+      status,
+      count: jobs.filter((job) => job.status === status).length,
+    }));
+  }, [jobs]);
+
   return (
-    <main className="min-h-screen bg-slate-950 p-6 text-white">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold">Job Board</h1>
-          <p className="mt-2 text-sm text-slate-400">
-            Húzd át az állásokat a kívánt státusz oszlopba.
-          </p>
-        </div>
+    <main className="min-h-screen bg-slate-950 text-white">
+      <div className="mx-auto max-w-[1600px] px-6 py-10">
+        <section className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
+          <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.10),transparent_25%)] px-8 py-8">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+                  Board view
+                </div>
 
-        <div className="flex items-center gap-3">
-          {isSaving && (
-            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300">
-              Mentés...
+                <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Job Board
+                </h1>
+
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                  Húzd át az állásokat a megfelelő státusz oszlopba, és kezeld a
+                  pipeline-odat egy áttekinthető kanban nézetben.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                {isSaving && (
+                  <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">
+                    Mentés...
+                  </div>
+                )}
+
+                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">
+                  Összes állás: <span className="text-white">{totalJobs}</span>
+                </div>
+
+                <Link
+                  href="/jobs"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                >
+                  Lista nézet
+                </Link>
+
+                <Link
+                  href="/jobs/new"
+                  className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-slate-950 transition hover:opacity-90"
+                >
+                  Új állás
+                </Link>
+              </div>
             </div>
-          )}
+          </div>
 
-          <a
-            href="/jobs/new"
-            className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-slate-950 transition hover:opacity-90"
-          >
-            Új állás
-          </a>
-        </div>
+          <div className="px-8 py-8">
+            <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
+              {stats.map((item) => {
+                const theme = getColumnTheme(item.status);
+
+                return (
+                  <div
+                    key={item.status}
+                    className="rounded-3xl border border-white/10 bg-slate-900/30 p-5"
+                  >
+                    <div
+                      className={`inline-flex rounded-full border px-3 py-1 text-xs ${theme.pill}`}
+                    >
+                      {item.status}
+                    </div>
+                    <p className="mt-4 text-3xl font-semibold tracking-tight">
+                      {item.count}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-500">állás</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+                {statuses.map((status) => (
+                  <Column
+                    key={status}
+                    status={status}
+                    jobs={jobs.filter((job) => job.status === status)}
+                  />
+                ))}
+              </div>
+            </DndContext>
+          </div>
+        </section>
       </div>
-
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
-          {statuses.map((status) => (
-            <Column
-              key={status}
-              status={status}
-              jobs={jobs.filter((job) => job.status === status)}
-            />
-          ))}
-        </div>
-      </DndContext>
     </main>
   );
 }
@@ -145,26 +244,45 @@ function Column({ status, jobs }: { status: string; jobs: Job[] }) {
     id: status,
   });
 
+  const theme = getColumnTheme(status);
+
   return (
     <div
       ref={setNodeRef}
-      className={`rounded-2xl border p-4 transition ${
+      className={`relative overflow-hidden rounded-[28px] border p-4 transition ${
         isOver
           ? "border-blue-400/40 bg-white/10"
-          : "border-white/10 bg-white/5"
+          : "border-white/10 bg-slate-900/30"
       }`}
     >
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-semibold">{status}</h2>
-        <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-300">
-          {jobs.length}
-        </span>
-      </div>
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b ${theme.glow} to-transparent`}
+      />
 
-      <div className="min-h-[200px] space-y-3">
-        {jobs.map((job) => (
-          <JobCard key={job.id} job={job} />
-        ))}
+      <div className="relative">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span
+              className={`rounded-full border px-3 py-1 text-xs font-medium ${theme.pill}`}
+            >
+              {status}
+            </span>
+          </div>
+
+          <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300">
+            {jobs.length}
+          </span>
+        </div>
+
+        <div className="min-h-[320px] space-y-3">
+          {jobs.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-white/10 bg-slate-950/30 p-4 text-sm text-slate-500">
+              Húzz ide egy állást.
+            </div>
+          ) : (
+            jobs.map((job) => <JobCard key={job.id} job={job} />)
+          )}
+        </div>
       </div>
     </div>
   );
@@ -188,14 +306,45 @@ function JobCard({ job }: { job: Job }) {
       style={style}
       {...listeners}
       {...attributes}
-      className={`rounded-xl border border-white/10 bg-slate-900 p-4 transition ${
-        isDragging ? "z-50 cursor-grabbing opacity-70" : "cursor-grab"
+      className={`group rounded-3xl border border-white/10 bg-slate-950/60 p-4 shadow-lg transition ${
+        isDragging
+          ? "z-50 cursor-grabbing opacity-70 ring-2 ring-blue-400/30"
+          : "cursor-grab hover:border-white/20 hover:bg-slate-950/80"
       }`}
     >
-      <a href={`/jobs/${job.id}`} className="block">
-        <p className="font-medium text-white">{job.title}</p>
-        <p className="mt-1 text-sm text-slate-400">{job.company}</p>
-      </a>
+      <Link href={`/jobs/${job.id}`} className="block">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="line-clamp-2 text-sm font-semibold leading-6 text-white transition group-hover:text-blue-300">
+              {job.title}
+            </p>
+
+            <p className="mt-1 text-sm text-slate-400">{job.company}</p>
+          </div>
+
+          <div className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-slate-400">
+            Drag
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-slate-300">
+            {job.location || "No location"}
+          </span>
+
+          {job.createdAt && (
+            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-slate-400">
+              {new Date(job.createdAt).toLocaleDateString("hu-HU")}
+            </span>
+          )}
+        </div>
+
+        {job.description && (
+          <p className="mt-4 line-clamp-3 text-xs leading-6 text-slate-500">
+            {job.description}
+          </p>
+        )}
+      </Link>
     </div>
   );
 }

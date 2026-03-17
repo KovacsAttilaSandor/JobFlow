@@ -59,6 +59,7 @@ Rules:
 - techStack: 3 to 8 short technology names
 - no markdown
 - no extra text before or after the JSON
+- language: hungarian
 
 JOB DESCRIPTION:
 ${job.description}

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import LogoutButton from "./logout-button";
 
 export default function DashboardNavbar() {
@@ -10,6 +11,7 @@ export default function DashboardNavbar() {
   const isJobs =
     pathname === "/jobs" || pathname.startsWith("/jobs/");
   const isNewJob = pathname === "/jobs/new";
+  const isEvents = pathname === "/events";
 
   const base =
     "rounded-xl px-3 py-2 text-sm transition";
@@ -29,47 +31,54 @@ export default function DashboardNavbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         <div className="flex items-center gap-8">
-          <a
+          <Link
             href="/dashboard"
             className="text-lg font-semibold tracking-tight text-white"
           >
             JobFlow
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-2 md:flex">
 
-            <a
+            <Link
               href="/dashboard"
               className={`${base} ${isDashboard ? active : inactive
                 }`}
             >
               Dashboard
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/jobs"
               className={`${base} ${isJobs && !isNewJob && !isBoard ? active : inactive
                 }`}
             >
               Állások
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/jobs/new"
               className={`${base} ${isNewJob ? active : inactive
                 }`}
             >
               Új állás
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/jobs/board"
               className={`${base} ${isBoard && !isNewJob ? active : inactive
-                }`}>Board</a>
+                }`}>Board</Link>
 
-            <a href="/settings"
+            <Link
+              href="/events"
+              className={`${base} ${isEvents ? active : inactive}`}
+            >
+              Events
+            </Link>
+
+            <Link href="/settings"
               className={`${base} ${isSettings ? active : inactive}`}
-            >Settings</a>
+            >Settings</Link>
 
             <LogoutButton/>
 

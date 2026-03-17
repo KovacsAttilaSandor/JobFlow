@@ -343,6 +343,70 @@ export default function SettingsPage() {
                 </div>
               )}
             </section>
+
+            <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+              <h2 className="text-xl font-semibold">Feature inventory</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                Gyors áttekintés arról, mi van már készen és min lehet még
+                bővíteni. Portfólió/demó célra.
+              </p>
+
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FeatureCard
+                  title="Auth (Credentials)"
+                  status="Kész"
+                  items={["Regisztráció", "Bejelentkezés", "JWT session"]}
+                />
+                <FeatureCard
+                  title="Jobs (lista + board)"
+                  status="Kész"
+                  items={[
+                    "Lista nézet szűréssel/rendezéssel",
+                    "Kanban board drag&drop státusz",
+                    "Új / szerkesztés / részletek",
+                  ]}
+                />
+                <FeatureCard
+                  title="Dashboard"
+                  status="Kész"
+                  items={[
+                    "Státusz statok",
+                    "Legutóbbi állások",
+                    "Közelgő eventek (megjelenítés)",
+                    "Aktivitás (status history)",
+                  ]}
+                />
+                <FeatureCard
+                  title="AI (Gemini)"
+                  status="Kész"
+                  items={[
+                    "CV parse",
+                    "Job summary",
+                    "Match score",
+                    "Cover letter",
+                  ]}
+                />
+                <FeatureCard
+                  title="Eventek (CRUD + naptár)"
+                  status="Fejlesztés alatt"
+                  items={[
+                    "Event létrehozás / szerkesztés / törlés",
+                    "Job detail integráció",
+                    "Naptár export (ICS)",
+                    "Külön /events nézet",
+                  ]}
+                />
+                <FeatureCard
+                  title="Extra workflow"
+                  status="Tervezve"
+                  items={[
+                    "Job parsing paste/URL-ből",
+                    "Tag-ek + export",
+                    "Interview prep",
+                  ]}
+                />
+              </div>
+            </section>
           </div>
 
           <aside className="space-y-6">
@@ -418,6 +482,44 @@ function FeatureItem({ title }: { title: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-900/40 px-4 py-3 text-sm text-slate-300">
       {title}
+    </div>
+  );
+}
+
+function FeatureCard({
+  title,
+  status,
+  items,
+}: {
+  title: string;
+  status: "Kész" | "Fejlesztés alatt" | "Tervezve";
+  items: string[];
+}) {
+  const badgeClass =
+    status === "Kész"
+      ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+      : status === "Fejlesztés alatt"
+        ? "border-blue-500/20 bg-blue-500/10 text-blue-300"
+        : "border-white/10 bg-white/5 text-slate-300";
+
+  return (
+    <div className="rounded-3xl border border-white/10 bg-slate-900/30 p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-base font-semibold text-white">{title}</p>
+          <p
+            className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs ${badgeClass}`}
+          >
+            {status}
+          </p>
+        </div>
+      </div>
+
+      <ul className="mt-4 space-y-2 text-sm text-slate-300">
+        {items.map((item, index) => (
+          <li key={index}>• {item}</li>
+        ))}
+      </ul>
     </div>
   );
 }

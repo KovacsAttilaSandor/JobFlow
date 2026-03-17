@@ -3,6 +3,30 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import JobDetailActions from "@/components/job-detail-actions";
 import JobAiInsights from "@/components/job-ai-insights";
+import JobEventsPanel from "@/components/job-events-panel";
+import Link from "next/link";
+import type { EventType as UiEventType } from "@/components/event-form-modal";
+
+function formatSalaryRange({
+  salaryMin,
+  salaryMax,
+  currency,
+}: {
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  currency?: string | null;
+}) {
+  const fmt = (value: number) => value.toLocaleString("hu-HU");
+  const cur = currency?.trim() ? ` ${currency.trim()}` : "";
+
+  if (typeof salaryMin === "number" && typeof salaryMax === "number") {
+    return `${fmt(salaryMin)}–${fmt(salaryMax)}${cur}`;
+  }
+
+  if (typeof salaryMin === "number") return `${fmt(salaryMin)}+${cur}`;
+  if (typeof salaryMax === "number") return `≤${fmt(salaryMax)}${cur}`;
+  return "—";
+}
 
 function getStatusClasses(status: string) {
   switch (status) {
@@ -17,21 +41,6 @@ function getStatusClasses(status: string) {
     case "Rejected":
       return "bg-red-500/15 text-red-300 border-red-400/20";
     case "OnHold":
-      return "bg-slate-500/15 text-slate-300 border-slate-400/20";
-    default:
-      return "bg-white/10 text-slate-300 border-white/10";
-  }
-}
-
-function getEventClasses(type: string) {
-  switch (type) {
-    case "Interview":
-      return "bg-purple-500/15 text-purple-300 border-purple-400/20";
-    case "FollowUp":
-      return "bg-blue-500/15 text-blue-300 border-blue-400/20";
-    case "TaskDeadline":
-      return "bg-orange-500/15 text-orange-300 border-orange-400/20";
-    case "Other":
       return "bg-slate-500/15 text-slate-300 border-slate-400/20";
     default:
       return "bg-white/10 text-slate-300 border-white/10";
@@ -68,6 +77,16 @@ export default async function JobDetailPage({ params }: PageProps) {
       userId: user.id,
     },
     include: {
+      tags: {
+        include: {
+          tag: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
       events: {
         orderBy: {
           startTime: "asc",
@@ -131,16 +150,31 @@ export default async function JobDetailPage({ params }: PageProps) {
     }
   }
 
+  let initialPrep: {
+    questions: string[];
+    talkingPoints: string[];
+    checklist: string[];
+    pitch30s: string;
+  } | null = null;
+
+  if (job.aiInterviewPrep) {
+    try {
+      initialPrep = JSON.parse(job.aiInterviewPrep);
+    } catch (error) {
+      console.error("INTERVIEW_PREP_PARSE_ERROR", error);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <div className="mx-auto max-w-7xl px-6 py-8">
-        <a
+        <Link
           href="/jobs"
           className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
         >
           <span>←</span>
           <span>Vissza az állásokhoz</span>
-        </a>
+        </Link>
 
         <section className="mt-6 overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
           <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.12),transparent_26%)] px-8 py-8">
@@ -166,6 +200,18 @@ export default async function JobDetailPage({ params }: PageProps) {
                     <>
                       <span className="text-slate-600">•</span>
                       <span>{job.source}</span>
+                    </>
+                  )}
+                  {(job.salaryMin || job.salaryMax) && (
+                    <>
+                      <span className="text-slate-600">•</span>
+                      <span>
+                        {formatSalaryRange({
+                          salaryMin: job.salaryMin,
+                          salaryMax: job.salaryMax,
+                          currency: job.currency,
+                        })}
+                      </span>
                     </>
                   )}
                 </div>
@@ -212,6 +258,36 @@ export default async function JobDetailPage({ params }: PageProps) {
                   <InfoCard title="Cég" value={job.company} />
                   <InfoCard title="Helyszín" value={job.location || "—"} />
                   <InfoCard title="Forrás" value={job.source || "—"} />
+                  <InfoCard
+                    title="Bérsáv"
+                    value={formatSalaryRange({
+                      salaryMin: job.salaryMin,
+                      salaryMax: job.salaryMax,
+                      currency: job.currency,
+                    })}
+                  />
+                </div>
+
+                <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/40 p-5">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                    Tag-ek
+                  </p>
+                  {job.tags.length ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {job.tags.map((item) => (
+                        <span
+                          key={item.tag.id}
+                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
+                        >
+                          {item.tag.name}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-4 text-sm text-slate-400">
+                      Nincs megadva tag.
+                    </p>
+                  )}
                 </div>
 
                 <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/40 p-5">
@@ -251,6 +327,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                 initialMatch={initialMatch}
                 initialSummary={initialSummary}
                 initialCoverLetter={job.aiCoverLetter ?? null}
+                initialPrep={initialPrep}
               />
 
               <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
@@ -330,6 +407,15 @@ export default async function JobDetailPage({ params }: PageProps) {
                   />
 
                   <SidebarInfoCard
+                    label="Bérsáv"
+                    value={formatSalaryRange({
+                      salaryMin: job.salaryMin,
+                      salaryMax: job.salaryMax,
+                      currency: job.currency,
+                    })}
+                  />
+
+                  <SidebarInfoCard
                     label="Kapcsolódó eventek"
                     value={String(job.events.length)}
                   />
@@ -341,63 +427,26 @@ export default async function JobDetailPage({ params }: PageProps) {
                 </div>
               </section>
 
-              <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
-                <div className="mb-5 flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">Kapcsolódó eventek</h2>
-                    <p className="mt-1 text-sm text-slate-400">
-                      Interjúk, follow-upok és határidők.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {job.events.length === 0 ? (
-                    <EmptyState text="Nincs még ehhez az álláshoz kapcsolódó event." />
-                  ) : (
-                    job.events.map((event) => (
-                      <div
-                        key={event.id}
-                        className="rounded-2xl border border-white/10 bg-slate-950/40 p-4"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="font-medium text-white">{event.title}</p>
-                            <p className="mt-1 text-sm text-slate-400">
-                              {new Date(event.startTime).toLocaleString("hu-HU")}
-                            </p>
-                          </div>
-
-                          <span
-                            className={`rounded-full border px-3 py-1 text-xs font-medium ${getEventClasses(
-                              event.type
-                            )}`}
-                          >
-                            {event.type}
-                          </span>
-                        </div>
-
-                        {event.location && (
-                          <p className="mt-3 text-sm text-slate-300">
-                            Helyszín: {event.location}
-                          </p>
-                        )}
-
-                        {event.meetingLink && (
-                          <a
-                            href={event.meetingLink}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="mt-2 inline-block break-all text-sm text-blue-300 underline underline-offset-4"
-                          >
-                            {event.meetingLink}
-                          </a>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </section>
+              <JobEventsPanel
+                jobId={job.id}
+                initialEvents={job.events.map((event) => ({
+                  id: event.id,
+                  jobId: event.jobId,
+                  type: event.type as UiEventType,
+                  title: event.title,
+                  description: event.description,
+                  location: event.location,
+                  meetingLink: event.meetingLink,
+                  startTime: event.startTime.toISOString(),
+                  endTime: event.endTime ? event.endTime.toISOString() : null,
+                  reminderMinutesBefore: event.reminderMinutesBefore,
+                  job: {
+                    id: job.id,
+                    title: job.title,
+                    company: job.company,
+                  },
+                }))}
+              />
             </aside>
           </div>
         </section>
