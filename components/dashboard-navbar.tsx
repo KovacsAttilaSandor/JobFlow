@@ -82,7 +82,7 @@ export default function DashboardNavbar() {
               className={`${base} ${isSettings ? active : inactive}`}
             >Settings</Link>
 
-            <LogoutButton/>
+            <LogoutButton />
 
           </nav>
         </div>
