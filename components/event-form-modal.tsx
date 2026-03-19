@@ -156,19 +156,19 @@ export default function EventFormModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/70 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-2xl overflow-hidden rounded-[28px] border border-white/10 bg-slate-950 text-white shadow-2xl">
-        <div className="border-b border-white/10 bg-white/5 px-6 py-5">
+      <div className="relative w-full max-w-2xl overflow-hidden rounded-[28px] border border-border bg-background text-foreground shadow-2xl">
+        <div className="border-b border-border bg-surface px-6 py-5">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-2">
                 Events
               </p>
               <h3 className="mt-2 text-xl font-semibold">{titleLabel}</h3>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-muted-2">
                 Interjú, follow-up vagy határidő rögzítése.
               </p>
             </div>
@@ -176,7 +176,7 @@ export default function EventFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="rounded-2xl border border-border bg-surface px-3 py-2 text-sm text-muted transition hover:bg-surface-2 hover:text-foreground"
             >
               Bezárás
             </button>
@@ -186,11 +186,11 @@ export default function EventFormModal({
         <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm text-slate-300">Típus</label>
+              <label className="mb-2 block text-sm text-muted">Típus</label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as EventType)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
               >
                 <option value="Interview">Interview</option>
                 <option value="FollowUp">FollowUp</option>
@@ -200,7 +200,7 @@ export default function EventFormModal({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-slate-300">
+              <label className="mb-2 block text-sm text-muted">
                 Emlékeztető (perc)
               </label>
               <input
@@ -208,77 +208,77 @@ export default function EventFormModal({
                 onChange={(e) => setReminderMinutesBefore(e.target.value)}
                 inputMode="numeric"
                 placeholder="pl. 30"
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none placeholder:text-slate-500"
+                className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm text-slate-300">Cím</label>
+              <label className="mb-2 block text-sm text-muted">Cím</label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
                 placeholder="pl. Tech interview – 1. kör"
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none placeholder:text-slate-500"
+                className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-slate-300">
+              <label className="mb-2 block text-sm text-muted">
                 Kezdés
               </label>
               <input
                 type="datetime-local"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-slate-300">
+              <label className="mb-2 block text-sm text-muted">
                 Vége (opcionális)
               </label>
               <input
                 type="datetime-local"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none"
+                className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-slate-300">
+              <label className="mb-2 block text-sm text-muted">
                 Helyszín (opcionális)
               </label>
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="pl. Office / Zoom"
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none placeholder:text-slate-500"
+                className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-slate-300">
+              <label className="mb-2 block text-sm text-muted">
                 Meeting link (opcionális)
               </label>
               <input
                 value={meetingLink}
                 onChange={(e) => setMeetingLink(e.target.value)}
                 placeholder="https://..."
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none placeholder:text-slate-500"
+                className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm text-slate-300">
+              <label className="mb-2 block text-sm text-muted">
                 Leírás / jegyzet (opcionális)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[120px] w-full rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none placeholder:text-slate-500"
+                className="min-h-[120px] w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
                 placeholder="Agenda, teendők, kérdések..."
               />
             </div>
@@ -296,7 +296,7 @@ export default function EventFormModal({
                 type="button"
                 onClick={handleDelete}
                 disabled={saving}
-                className="rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-60"
+                className="rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-red-500 disabled:opacity-60"
               >
                 Törlés
               </button>
@@ -307,7 +307,7 @@ export default function EventFormModal({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-slate-950 transition hover:opacity-90 disabled:opacity-60"
+              className="rounded-2xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
             >
               {saving ? "Mentés..." : "Mentés"}
             </button>

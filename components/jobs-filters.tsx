@@ -110,34 +110,34 @@ export default function JobsFilters({
   }
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
+    <section className="rounded-3xl border border-border bg-surface-2/60 p-6">
       <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-xl font-semibold">Keresés és szűrés</h2>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-muted-2">
             Élő keresés, dinamikus szűrés és rendezés.
           </p>
         </div>
 
-        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+        <div className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
           Aktív filterek: {activeFiltersCount}
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-7">
         <div className="xl:col-span-2">
-          <label className="mb-2 block text-sm text-slate-300">Keresés</label>
+          <label className="mb-2 block text-sm text-muted">Keresés</label>
           <input
             type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Pozíció, cég, helyszín, forrás..."
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none placeholder:text-slate-500"
+            className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
           />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-300">Státusz</label>
+          <label className="mb-2 block text-sm text-muted">Státusz</label>
           <select
             value={status}
             onChange={(e) => {
@@ -145,7 +145,7 @@ export default function JobsFilters({
               setStatus(value);
               updateUrl({ status: value }, { resetPage: true });
             }}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none"
+            className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
             <option value="All">Összes</option>
             {statusOptions.map((item) => (
@@ -157,7 +157,7 @@ export default function JobsFilters({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-300">Helyszín</label>
+          <label className="mb-2 block text-sm text-muted">Helyszín</label>
           <select
             value={location}
             onChange={(e) => {
@@ -165,7 +165,7 @@ export default function JobsFilters({
               setLocation(value);
               updateUrl({ location: value }, { resetPage: true });
             }}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none"
+            className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
             <option value="All">Összes</option>
             {locationOptions.map((item) => (
@@ -177,7 +177,7 @@ export default function JobsFilters({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-300">Forrás</label>
+          <label className="mb-2 block text-sm text-muted">Forrás</label>
           <select
             value={source}
             onChange={(e) => {
@@ -185,7 +185,7 @@ export default function JobsFilters({
               setSource(value);
               updateUrl({ source: value }, { resetPage: true });
             }}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none"
+            className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
             <option value="All">Összes</option>
             {sourceOptions.map((item) => (
@@ -197,7 +197,7 @@ export default function JobsFilters({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-300">Tag</label>
+          <label className="mb-2 block text-sm text-muted">Tag</label>
           <select
             value={tag}
             onChange={(e) => {
@@ -205,7 +205,7 @@ export default function JobsFilters({
               setTag(value);
               updateUrl({ tag: value }, { resetPage: true });
             }}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none"
+            className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
             <option value="All">Összes</option>
             {tagOptions.map((item) => (
@@ -217,7 +217,7 @@ export default function JobsFilters({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-300">Rendezés</label>
+          <label className="mb-2 block text-sm text-muted">Rendezés</label>
           <select
             value={sort}
             onChange={(e) => {
@@ -225,7 +225,7 @@ export default function JobsFilters({
               setSort(value);
               updateUrl({ sort: value }, { resetPage: true });
             }}
-            className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none"
+            className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
             <option value="newest">Legújabb elöl</option>
             <option value="oldest">Legrégebbi elöl</option>
@@ -240,14 +240,14 @@ export default function JobsFilters({
         <button
           type="button"
           onClick={resetFilters}
-          className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+          className="rounded-2xl border border-border bg-surface px-5 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
         >
           Reset
         </button>
 
         <Link
           href="/jobs/board"
-          className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+          className="rounded-2xl border border-border bg-surface px-5 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
         >
           Board nézet
         </Link>

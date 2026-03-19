@@ -97,13 +97,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.22),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.18),transparent_30%)]" />
 
       <div className="relative mx-auto flex min-h-screen max-w-7xl items-center px-6 py-10">
         <div className="grid w-full gap-10 lg:grid-cols-2 lg:items-center">
           <div className="hidden lg:block">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-sm text-slate-300 backdrop-blur">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1 text-sm text-muted backdrop-blur">
               🚀 JobFlow
             </div>
 
@@ -114,25 +114,25 @@ export default function RegisterPage() {
               </span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-400">
+            <p className="mt-6 max-w-xl text-lg leading-8 text-muted-2">
               Kövesd az állásokat, interjúkat és follow-upokat egy modern
               dashboardban, és használd az AI funkciókat a gyorsabb
               álláskereséshez.
             </p>
 
             <div className="mt-10 grid max-w-xl gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-                <div className="text-sm font-medium text-white">
+              <div className="rounded-2xl border border-border bg-surface p-5 backdrop-blur">
+                <div className="text-sm font-medium text-foreground">
                   Job tracking
                 </div>
-                <div className="mt-2 text-sm text-slate-400">
+                <div className="mt-2 text-sm text-muted-2">
                   Státuszok, board nézet, események és dashboard.
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-                <div className="text-sm font-medium text-white">AI tools</div>
-                <div className="mt-2 text-sm text-slate-400">
+              <div className="rounded-2xl border border-border bg-surface p-5 backdrop-blur">
+                <div className="text-sm font-medium text-foreground">AI tools</div>
+                <div className="mt-2 text-sm text-muted-2">
                   Match score, AI summary és cover letter generálás.
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function RegisterPage() {
 
           <div className="w-full max-w-md justify-self-center">
             <div className="mb-8 text-center lg:hidden">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-sm text-slate-300 backdrop-blur">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1 text-sm text-muted backdrop-blur">
                 🚀 JobFlow
               </div>
 
@@ -149,29 +149,29 @@ export default function RegisterPage() {
                 Regisztráció
               </h1>
 
-              <p className="mt-3 text-sm leading-6 text-slate-400">
+              <p className="mt-3 text-sm leading-6 text-muted-2">
                 Hozz létre egy új fiókot, és kezdj el mindent egy helyen kezelni.
               </p>
             </div>
 
-            <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
+            <div className="rounded-[28px] border border-border bg-surface p-8 shadow-2xl backdrop-blur-xl">
               <div className="mb-6 hidden lg:block">
                 <h2 className="text-3xl font-semibold tracking-tight">
                   Regisztráció
                 </h2>
-                <p className="mt-2 text-sm leading-6 text-slate-400">
+                <p className="mt-2 text-sm leading-6 text-muted-2">
                   Add meg az adataidat, és kész is a JobFlow fiókod.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Név
                   </label>
                   <input
                     type="text"
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
                     placeholder="Teljes neved"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -179,12 +179,12 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Email
                   </label>
                   <input
                     type="email"
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
                     placeholder="pelda@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -193,14 +193,14 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Jelszó
                   </label>
 
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+                      className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 pr-12 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
                       placeholder="Legalább 6 karakter"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -210,7 +210,7 @@ export default function RegisterPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-white"
+                      className="absolute inset-y-0 right-0 flex items-center px-4 text-muted transition hover:text-foreground"
                       aria-label="Jelszó megjelenítése"
                     >
                       <EyeIcon open={showPassword} />
@@ -219,14 +219,14 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-200">
+                  <label className="mb-2 block text-sm font-medium text-foreground">
                     Jelszó megerősítése
                   </label>
 
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+                      className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 pr-12 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
                       placeholder="Írd be újra a jelszót"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
@@ -238,7 +238,7 @@ export default function RegisterPage() {
                       onClick={() =>
                         setShowConfirmPassword((prev) => !prev)
                       }
-                      className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-white"
+                      className="absolute inset-y-0 right-0 flex items-center px-4 text-muted transition hover:text-foreground"
                       aria-label="Jelszó megjelenítése"
                     >
                       <EyeIcon open={showConfirmPassword} />
@@ -261,20 +261,20 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 font-medium text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3 font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading && (
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/70 border-t-transparent" />
                   )}
                   {loading ? "Regisztráció..." : "Fiók létrehozása"}
                 </button>
               </form>
 
-              <div className="mt-6 text-center text-sm text-slate-400">
+              <div className="mt-6 text-center text-sm text-muted-2">
                 Már van fiókod?{" "}
                 <Link
                   href="/login"
-                  className="font-medium text-white underline underline-offset-4 transition hover:text-slate-200"
+                  className="font-medium text-foreground underline underline-offset-4 transition hover:opacity-80"
                 >
                   Bejelentkezés
                 </Link>

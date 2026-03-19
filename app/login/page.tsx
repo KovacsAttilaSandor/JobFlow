@@ -82,12 +82,12 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6 py-12 text-white">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6 py-12 text-foreground">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.18),transparent_35%),radial-gradient(circle_at_bottom,rgba(168,85,247,0.18),transparent_30%)]" />
 
       <div className="relative w-full max-w-md">
         <div className="mb-10 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-sm text-slate-300 backdrop-blur">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1 text-sm text-muted backdrop-blur">
             🚀 JobFlow
           </div>
 
@@ -95,21 +95,21 @@ export default function LoginPage() {
             Üdv újra
           </h1>
 
-          <p className="mt-3 text-sm leading-6 text-slate-400">
+          <p className="mt-3 text-sm leading-6 text-muted-2">
             Jelentkezz be, és folytasd az állásaid, interjúid és jelentkezéseid
             kezelését egy helyen.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
+        <div className="rounded-3xl border border-border bg-surface p-8 shadow-2xl backdrop-blur-xl">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-200">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Email
               </label>
               <input
                 type="email"
-                className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-xl border border-border bg-surface-2 px-4 py-3 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
                 placeholder="pelda@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -118,14 +118,14 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-200">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Jelszó
               </label>
 
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full rounded-xl border border-border bg-surface-2 px-4 py-3 pr-12 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
                   placeholder="Írd be a jelszavad"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -135,7 +135,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-white"
+                  className="absolute inset-y-0 right-0 flex items-center px-4 text-muted transition hover:text-foreground"
                   aria-label="Jelszó megjelenítése"
                 >
                   <EyeIcon open={showPassword} />
@@ -143,7 +143,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm text-slate-400">
+            <div className="flex items-center justify-between text-sm text-muted-2">
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -154,7 +154,7 @@ export default function LoginPage() {
                 Emlékezz rám
               </label>
 
-              <span className="text-slate-500">Biztonságos bejelentkezés</span>
+              <span className="text-muted-2">Biztonságos bejelentkezés</span>
             </div>
 
             {error && (
@@ -166,20 +166,20 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 font-medium text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading && (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/70 border-t-transparent" />
               )}
               {loading ? "Bejelentkezés..." : "Bejelentkezés"}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-slate-400">
+          <div className="mt-6 text-center text-sm text-muted-2">
             Nincs még fiókod?{" "}
             <Link
               href="/register"
-              className="font-medium text-white underline underline-offset-4 transition hover:text-slate-200"
+              className="font-medium text-foreground underline underline-offset-4 transition hover:opacity-80"
             >
               Regisztráció
             </Link>
