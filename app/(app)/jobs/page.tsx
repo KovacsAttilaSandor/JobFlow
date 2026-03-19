@@ -274,13 +274,13 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   if (sort !== "newest") queryBase.set("sort", sort);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-7xl px-6 py-10">
-        <section className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
-          <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.10),transparent_25%)] px-8 py-8">
+        <section className="overflow-hidden rounded-[32px] border border-border bg-surface shadow-2xl backdrop-blur-xl">
+          <div className="border-b border-border bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.10),transparent_25%)] px-8 py-8">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+                <div className="inline-flex rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
                   Jobs
                 </div>
 
@@ -288,27 +288,27 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                   Állások kezelése
                 </h1>
 
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-2">
                   Keress, szűrj, rendezz és navigálj gyorsan a jelentkezéseid
                   között.
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">
-                  Találatok: <span className="text-white">{totalCount}</span>
+                <div className="rounded-full border border-border bg-surface px-3 py-2 text-sm text-muted">
+                  Találatok: <span className="text-foreground">{totalCount}</span>
                 </div>
 
                 <a
                   href={`/api/jobs/export?${queryBase.toString()}`}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                  className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
                 >
                   Export (CSV)
                 </a>
 
                 <Link
                   href="/jobs/new"
-                  className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-slate-950 transition hover:opacity-90"
+                  className="rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
                 >
                   Új állás
                 </Link>
@@ -336,13 +336,13 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               />
             </div>
 
-            <div className="mt-8 overflow-hidden rounded-3xl border border-white/10 bg-slate-900/30">
+            <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-surface-2/60">
               {jobs.length === 0 ? (
                 <div className="px-6 py-12 text-center">
-                  <p className="text-lg font-medium text-white">
+                  <p className="text-lg font-medium text-foreground">
                     Nincs találat
                   </p>
-                  <p className="mt-2 text-sm text-slate-400">
+                  <p className="mt-2 text-sm text-muted-2">
                     Próbálj meg más szűrőket vagy keresési kifejezést használni.
                   </p>
                 </div>
@@ -511,8 +511,8 @@ function buildPageQuery(base: URLSearchParams, page: number) {
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-slate-900/30 p-5">
-      <p className="text-sm text-slate-400">{label}</p>
+    <div className="rounded-3xl border border-border bg-surface-2/60 p-5">
+      <p className="text-sm text-muted-2">{label}</p>
       <p className="mt-3 text-3xl font-semibold tracking-tight">{value}</p>
     </div>
   );

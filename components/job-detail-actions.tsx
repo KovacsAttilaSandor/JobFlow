@@ -22,7 +22,7 @@ function getStatusButtonClasses(item: string, active: boolean) {
   const base =
     "rounded-2xl border px-3 py-2 text-xs font-medium transition";
   if (!active) {
-    return `${base} border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white`;
+    return `${base} border-border bg-surface text-muted hover:bg-surface-2 hover:text-foreground`;
   }
 
   switch (item) {
@@ -37,9 +37,9 @@ function getStatusButtonClasses(item: string, active: boolean) {
     case "Rejected":
       return `${base} border-red-400/20 bg-red-500/15 text-red-300`;
     case "OnHold":
-      return `${base} border-slate-400/20 bg-slate-500/15 text-slate-300`;
+      return `${base} border-border bg-surface-2 text-muted`;
     default:
-      return `${base} border-white/10 bg-white/10 text-white`;
+      return `${base} border-border bg-surface-3 text-foreground`;
   }
 }
 
@@ -117,22 +117,22 @@ export default function JobDetailActions({
   }
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-5 shadow-xl backdrop-blur">
+    <div className="rounded-3xl border border-border bg-surface-2/60 p-5 shadow-xl backdrop-blur">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-2">
             Műveletek
           </p>
-          <h3 className="mt-2 text-lg font-semibold text-white">
+          <h3 className="mt-2 text-lg font-semibold text-foreground">
             Állás kezelése
           </h3>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-muted-2">
             Státusz váltása, szerkesztés és törlés.
           </p>
         </div>
 
         {isSaving && (
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+          <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
             Mentés...
           </span>
         )}
@@ -155,7 +155,7 @@ export default function JobDetailActions({
       <div className="mt-5 flex flex-col gap-3 sm:flex-row">
         <Link
           href={`/jobs/${jobId}/edit`}
-          className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-white/10"
+          className="flex-1 rounded-2xl border border-border bg-surface px-4 py-3 text-center text-sm font-medium text-foreground transition hover:bg-surface-2"
         >
           Állás szerkesztése
         </Link>

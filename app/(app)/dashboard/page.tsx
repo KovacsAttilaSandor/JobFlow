@@ -7,19 +7,19 @@ import Link from "next/link";
 function getStatusClasses(status: string) {
   switch (status) {
     case "Saved":
-      return "bg-yellow-500/15 text-yellow-300 border-yellow-400/20";
+      return "status-pill status-saved";
     case "Applied":
-      return "bg-blue-500/15 text-blue-300 border-blue-400/20";
+      return "status-pill status-applied";
     case "Interviewing":
-      return "bg-purple-500/15 text-purple-300 border-purple-400/20";
+      return "status-pill status-interviewing";
     case "Offer":
-      return "bg-green-500/15 text-green-300 border-green-400/20";
+      return "status-pill status-offer";
     case "Rejected":
-      return "bg-red-500/15 text-red-300 border-red-400/20";
+      return "status-pill status-rejected";
     case "OnHold":
-      return "bg-slate-500/15 text-slate-300 border-slate-400/20";
+      return "status-pill status-onhold";
     default:
-      return "bg-white/10 text-slate-300 border-white/10";
+      return "status-pill bg-surface-3 text-muted border-border";
   }
 }
 
@@ -34,7 +34,7 @@ function getEventClasses(type: string) {
     case "Other":
       return "bg-slate-500/15 text-slate-300 border-slate-400/20";
     default:
-      return "bg-white/10 text-slate-300 border-white/10";
+      return "bg-surface-3 text-muted border-border";
   }
 }
 
@@ -72,15 +72,15 @@ export default async function DashboardPage() {
   const displayName = dbUser.name || dbUser.email;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.12),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(147,51,234,0.12),transparent_55%)] opacity-70" />
       <div className="relative mx-auto max-w-7xl px-6 py-10">
         {/* HEADER */}
-        <section className="overflow-hidden rounded-[32px] border border-white/10 bg-slate-950/70 shadow-2xl backdrop-blur-2xl">
-          <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.14),transparent_28%)] px-8 py-8">
+        <section className="overflow-hidden rounded-[32px] border border-border bg-background/70 shadow-2xl backdrop-blur-2xl">
+          <div className="border-b border-border bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.14),transparent_28%)] px-8 py-8">
             <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
                   Dashboard
                 </div>
@@ -89,7 +89,7 @@ export default async function DashboardPage() {
                   Üdv újra, {displayName}
                 </h1>
 
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
                   Áttekintés az álláskeresésedről: mennyi aktív jelentkezésed
                   van, milyen eventek közelednek, és hogyan változtak a
                   státuszaid az elmúlt időszakban.
@@ -99,21 +99,21 @@ export default async function DashboardPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/jobs"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                  className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
                 >
                   Állások
                 </Link>
 
                 <Link
                   href="/jobs/board"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+                  className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
                 >
                   Board nézet
                 </Link>
 
                 <Link
                   href="/jobs/new"
-                  className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-slate-950 shadow-sm transition hover:opacity-90"
+                  className="rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
                 >
                   Új állás
                 </Link>
@@ -126,7 +126,7 @@ export default async function DashboardPage() {
             <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
               <Link
                 href="/jobs"
-                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-slate-950/80"
+                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
                 <p className="text-sm text-slate-400">Összes jelentkezés</p>
                 <p className="mt-3 text-3xl font-semibold">
@@ -139,7 +139,7 @@ export default async function DashboardPage() {
 
               <Link
                 href="/jobs"
-                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-slate-950/80"
+                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
                 <p className="text-sm text-slate-400">Aktív jelentkezések</p>
                 <p className="mt-3 text-3xl font-semibold">
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
 
               <Link
                 href="/jobs"
-                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-slate-950/80"
+                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
                 <p className="text-sm text-slate-400">Interjúk</p>
                 <p className="mt-3 text-3xl font-semibold">
@@ -165,7 +165,7 @@ export default async function DashboardPage() {
 
               <Link
                 href="/jobs"
-                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-slate-950/80"
+                className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
                 <p className="text-sm text-slate-400">Ajánlatok</p>
                 <p className="mt-3 text-3xl font-semibold">
@@ -218,7 +218,7 @@ export default async function DashboardPage() {
                   data.recentJobs.map((job) => (
                     <div
                       key={job.id}
-                      className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-slate-950/60 p-4 transition hover:border-white/20 hover:bg-slate-950/80 md:flex-row md:items-center md:justify-between"
+                      className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-slate-950/60 p-4 transition hover:border-white/20 hover:bg-white/10 md:flex-row md:items-center md:justify-between"
                     >
                       <div>
                         <Link
@@ -239,7 +239,7 @@ export default async function DashboardPage() {
 
                       <div className="flex items-center gap-3">
                         <span
-                          className={`rounded-full border px-3 py-1 text-[11px] font-medium ${getStatusClasses(
+                          className={`rounded-full border px-3 py-1 text-[11px] font-medium  ${getStatusClasses(
                             job.status
                           )}`}
                         >
