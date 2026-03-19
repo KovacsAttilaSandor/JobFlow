@@ -33,32 +33,32 @@ function getColumnTheme(status: string) {
   switch (status) {
     case "Saved":
       return {
-        pill: "border-yellow-400/20 bg-yellow-500/10 text-yellow-300",
+        pill: "status-pill status-saved",
         glow: "from-yellow-500/10",
       };
     case "Applied":
       return {
-        pill: "border-blue-400/20 bg-blue-500/10 text-blue-300",
+        pill: "status-pill status-applied",
         glow: "from-blue-500/10",
       };
     case "Interviewing":
       return {
-        pill: "border-purple-400/20 bg-purple-500/10 text-purple-300",
+        pill: "status-pill status-interviewing",
         glow: "from-purple-500/10",
       };
     case "Offer":
       return {
-        pill: "border-green-400/20 bg-green-500/10 text-green-300",
+        pill: "status-pill status-offer",
         glow: "from-green-500/10",
       };
     case "Rejected":
       return {
-        pill: "border-red-400/20 bg-red-500/10 text-red-300",
+        pill: "status-pill status-rejected",
         glow: "from-red-500/10",
       };
     default:
       return {
-        pill: "border-white/10 bg-white/5 text-slate-300",
+        pill: "status-pill bg-surface-3 text-muted border-border",
         glow: "from-white/5",
       };
   }
