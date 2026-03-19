@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LogoutButton from "./logout-button";
+import ThemeToggle from "./theme-toggle";
+import ThemeProvider from "./theme-provider";
 
 export default function DashboardNavbar() {
   const pathname = usePathname();
@@ -21,19 +23,19 @@ export default function DashboardNavbar() {
   const isSettings = pathname === "/settings"
 
   const active =
-    "bg-white/10 text-white";
+    "bg-surface-3 text-foreground";
 
   const inactive =
-    "text-slate-300 hover:bg-white/5 hover:text-white";
+    "text-muted hover:bg-surface-2 hover:text-foreground";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         <div className="flex items-center gap-8">
           <Link
             href="/dashboard"
-            className="text-lg font-semibold tracking-tight text-white"
+            className="text-lg font-semibold tracking-tight text-foreground"
           >
             JobFlow
           </Link>
@@ -85,8 +87,15 @@ export default function DashboardNavbar() {
           </nav>
         </div>
 
-        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">
-          App
+        <div className="flex items-center gap-3">
+        <ThemeProvider>
+          <div className="hidden md:inline-flex">
+            <ThemeToggle />
+          </div>
+        </ThemeProvider>
+          <div className="rounded-full border border-border bg-surface px-3 py-2 text-sm text-muted">
+            App
+          </div>
         </div>
 
       </div>

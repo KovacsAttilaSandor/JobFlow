@@ -9,7 +9,7 @@ export default function AppLayout({
     <>
       <DashboardNavbar />
 
-      <main className="min-h-screen bg-slate-950 text-white">
+      <main className="min-h-screen bg-background text-foreground">
         {children}
       </main>
     </>
