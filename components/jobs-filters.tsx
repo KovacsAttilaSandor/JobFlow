@@ -147,9 +147,9 @@ export default function JobsFilters({
             }}
             className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
-            <option value="All">Összes</option>
+            <option value="All" style={{ backgroundColor: "white", color: "black" }}>Összes</option>
             {statusOptions.map((item) => (
-              <option key={item} value={item}>
+              <option key={item} value={item} style={{ backgroundColor: "white", color: "black" }}>
                 {item}
               </option>
             ))}
@@ -167,9 +167,9 @@ export default function JobsFilters({
             }}
             className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
-            <option value="All">Összes</option>
+            <option value="All" style={{ backgroundColor: "white", color: "black" }}>Összes</option>
             {locationOptions.map((item) => (
-              <option key={item} value={item}>
+              <option key={item} value={item} style={{ backgroundColor: "white", color: "black" }}>
                 {item}
               </option>
             ))}
@@ -187,9 +187,9 @@ export default function JobsFilters({
             }}
             className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
-            <option value="All">Összes</option>
+            <option value="All" style={{ backgroundColor: "white", color: "black" }}>Összes</option>
             {sourceOptions.map((item) => (
-              <option key={item} value={item}>
+              <option key={item} value={item} style={{ backgroundColor: "white", color: "black" }}>
                 {item}
               </option>
             ))}
@@ -207,9 +207,9 @@ export default function JobsFilters({
             }}
             className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
-            <option value="All">Összes</option>
+            <option value="All" style={{ backgroundColor: "white", color: "black" }}>Összes</option>
             {tagOptions.map((item) => (
-              <option key={item} value={item}>
+              <option key={item} value={item} style={{ backgroundColor: "white", color: "black" }}>
                 {item}
               </option>
             ))}
@@ -227,11 +227,11 @@ export default function JobsFilters({
             }}
             className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none focus:ring-2 focus:ring-primary/25"
           >
-            <option value="newest">Legújabb elöl</option>
-            <option value="oldest">Legrégebbi elöl</option>
-            <option value="title-asc">Pozíció A–Z</option>
-            <option value="company-asc">Cég A–Z</option>
-            <option value="status-asc">Státusz szerint</option>
+            <option value="newest" style={{ backgroundColor: "white", color: "black" }}>Legújabb elöl</option>
+            <option value="oldest" style={{ backgroundColor: "white", color: "black" }}>Legrégebbi elöl</option>
+            <option value="title-asc" style={{ backgroundColor: "white", color: "black" }}>Pozíció A–Z</option>
+            <option value="company-asc" style={{ backgroundColor: "white", color: "black" }}>Cég A–Z</option>
+            <option value="status-asc" style={{ backgroundColor: "white", color: "black" }}>Státusz szerint</option>
           </select>
         </div>
       </div>

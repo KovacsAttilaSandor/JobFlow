@@ -1,3 +1,5 @@
+import ThemeProvider from "@/components/theme-provider";
+import ThemeToggle from "@/components/theme-toggle";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -96,6 +98,7 @@ export default function HomePage() {
                       PDF feltöltés és szövegkinyerés.
                     </div>
                   </div>
+        
 
                   <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
                     <div className="font-medium">AI analysis</div>

@@ -71,12 +71,13 @@ export default function LoginPage() {
       callbackUrl: "/dashboard",
     });
 
-    setLoading(false);
-
     if (result?.error) {
+      
       setError("Hibás email vagy jelszó.");
       return;
     }
+
+    setLoading(false);
 
     window.location.href = "/dashboard";
   }

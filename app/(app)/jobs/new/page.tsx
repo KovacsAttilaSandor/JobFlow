@@ -108,56 +108,48 @@ export default function NewJobPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-4xl px-6 py-10">
-        <section className="overflow-hidden rounded-[32px] border border-border bg-surface shadow-2xl backdrop-blur-xl">
-          <div className="border-b border-border bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.10),transparent_25%)] px-8 py-8">
+    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+      <div className="pointer-events-none fixed inset-0 opacity-90">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.10),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.08),transparent_34%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(96,165,250,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(129,140,248,0.10),transparent_38%)]" />
+      </div>
+
+      <div className="relative mx-auto max-w-5xl px-6 py-10">
+        <section
+          className="overflow-hidden rounded-[32px] border border-[var(--border)] bg-[var(--card)] shadow-2xl"
+          style={{ boxShadow: "var(--shadow-card)" }}
+        >
+          <div className="border-b border-[var(--border)] bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.10),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.08),transparent_26%)] px-8 py-8 dark:bg-[radial-gradient(circle_at_top_left,rgba(96,165,250,0.14),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(129,140,248,0.10),transparent_28%)]">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <div className="inline-flex rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+                <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--soft)] px-3 py-1 text-xs text-[var(--muted-foreground)]">
                   Jobs
                 </div>
 
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Új állás hozzáadása
+                  Új állás hozzáadása 
                 </h1>
 
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-2">
-                  Add meg a pozíció legfontosabb adatait, hogy könnyen
-                  nyomon követhesd a jelentkezésedet.
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
+                  Add meg a pozíció legfontosabb adatait, vagy használd az AI
+                  kitöltést, hogy gyorsabban rögzíthesd az álláshirdetést.
                 </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <Link
-                  href="/jobs"
-                  className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
-                >
-                  Lista nézet
-                </Link>
-
-                <Link
-                  href="/jobs/board"
-                  className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
-                >
-                  Board nézet
-                </Link>
               </div>
             </div>
           </div>
 
           <div className="px-8 py-8">
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-8"
-            >
-              <section className="rounded-3xl border border-border bg-surface-2/60 p-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <section
+                className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6"
+                style={{ boxShadow: "var(--shadow-soft)" }}
+              >
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold">Gyors felvitel (AI)</h2>
-                    <p className="mt-1 text-sm text-muted-2">
+                    <h2 className="text-lg font-semibold">Gyors felvitel AI-val</h2>
+                    <p className="mt-1 text-sm leading-6 text-[var(--muted-foreground)]">
                       Illeszd be az álláshirdetés szövegét, és az AI megpróbálja
-                      kitölteni a mezőket (pozíció, cég, bér, stb.).
+                      kitölteni a fontos mezőket: pozíció, cég, helyszín, bér,
+                      forrás és leírás.
                     </p>
                   </div>
 
@@ -165,172 +157,220 @@ export default function NewJobPage() {
                     type="button"
                     onClick={autofillFromAi}
                     disabled={aiLoading}
-                    className="rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+                    className="rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-medium text-[var(--primary-foreground)] transition hover:opacity-90 disabled:opacity-60"
                   >
                     {aiLoading ? "Kitöltés..." : "Mezők kitöltése AI-val"}
                   </button>
                 </div>
 
-                <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="md:col-span-2">
-                    <label className="text-sm text-muted">
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
                       Álláshirdetés szövege
                     </label>
                     <textarea
-                      className="mt-2 min-h-[160px] w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
+                      className="mt-2 min-h-[180px] w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={aiJobText}
                       onChange={(e) => setAiJobText(e.target.value)}
-                      placeholder="Illeszd be ide a teljes hirdetést vagy a fontos részeket..."
+                      placeholder="Illeszd be ide a teljes hirdetést vagy a legfontosabb részeit..."
                     />
                   </div>
 
-                  <div className="md:col-span-2">
-                    <p className="text-xs text-muted-2">
-                      Tipp: ha megadod a Job URL-t is, a rendszer eltárolja, és
-                      az AI kontextusnak is használhatja.
-                    </p>
+                  <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-xs text-[var(--muted-foreground)]">
+                    Tipp: ha a Job URL mezőt is kitöltöd, a rendszer eltárolja,
+                    és az AI kontextusként is fel tudja használni.
                   </div>
                 </div>
 
                 {aiError && (
-                  <div className="mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                  <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
                     {aiError}
                   </div>
                 )}
               </section>
 
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="md:col-span-2">
-                  <label className="text-sm text-muted">Pozíció</label>
-                  <input
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Pl. Senior Frontend fejlesztő"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm text-muted">Cég</label>
-                  <input
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    placeholder="Pl. Acme Zrt."
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm text-muted">Helyszín</label>
-                  <input
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Pl. Budapest / Remote"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm text-muted">Forrás</label>
-                  <input
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={source}
-                    onChange={(e) => setSource(e.target.value)}
-                    placeholder="Pl. LinkedIn, Profession, Referral"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm text-muted">Tag-ek</label>
-                  <input
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={tagsText}
-                    onChange={(e) => setTagsText(e.target.value)}
-                    placeholder="pl. remote, high priority, referral"
-                  />
-                  <p className="mt-2 text-xs text-muted-2">
-                    Vesszővel elválasztva. Max 12 tag.
+              <section
+                className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6"
+                style={{ boxShadow: "var(--shadow-soft)" }}
+              >
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold">Alapadatok</h2>
+                  <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+                    Ezek az információk jelennek meg a lista-, board- és detail
+                    nézetekben.
                   </p>
                 </div>
 
-                <div>
-                  <label className="text-sm text-muted">Job URL</label>
-                  <input
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={jobUrl}
-                    onChange={(e) => setJobUrl(e.target.value)}
-                    placeholder="Az álláshirdetés linkje"
-                  />
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="md:col-span-2">
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Pozíció
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Pl. Senior Frontend fejlesztő"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Cég
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      placeholder="Pl. Acme Zrt."
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Helyszín
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="Pl. Budapest / Hybrid / Remote"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Forrás
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={source}
+                      onChange={(e) => setSource(e.target.value)}
+                      placeholder="Pl. LinkedIn, Profession, Referral"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Job URL
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={jobUrl}
+                      onChange={(e) => setJobUrl(e.target.value)}
+                      placeholder="Az álláshirdetés linkje"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Tag-ek
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={tagsText}
+                      onChange={(e) => setTagsText(e.target.value)}
+                      placeholder="pl. remote, high priority, referral"
+                    />
+                    <p className="mt-2 text-xs text-[var(--muted-foreground)]">
+                      Vesszővel elválasztva. Maximum 12 tag.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6"
+                style={{ boxShadow: "var(--shadow-soft)" }}
+              >
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold">Fizetés és részletek</h2>
+                  <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+                    Opcionális mezők, amelyek segítik az összehasonlítást és a
+                    későbbi döntést.
+                  </p>
                 </div>
 
-                <div>
-                  <label className="text-sm text-muted">Deviza</label>
-                  <input
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    placeholder="Pl. HUF, EUR"
-                  />
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Deviza
+                    </label>
+                    <input
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={currency}
+                      onChange={(e) => setCurrency(e.target.value)}
+                      placeholder="Pl. HUF, EUR"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Minimum fizetés
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={salaryMin}
+                      onChange={(e) => setSalaryMin(e.target.value)}
+                      placeholder="Pl. 800000"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-[var(--muted-foreground)]">
+                      Maximum fizetés
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                      value={salaryMax}
+                      onChange={(e) => setSalaryMax(e.target.value)}
+                      placeholder="Pl. 1200000"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="text-sm text-muted">
-                    Minimum fizetés (bruttó / hónap)
+                <div className="mt-6">
+                  <label className="text-sm text-[var(--muted-foreground)]">
+                    Leírás / jegyzetek
                   </label>
-                  <input
-                    type="number"
-                    min={0}
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={salaryMin}
-                    onChange={(e) => setSalaryMin(e.target.value)}
-                    placeholder="Pl. 800000"
+                  <textarea
+                    className="mt-2 min-h-[150px] w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Illeszd be az álláshirdetés fontos részeit vagy a saját megjegyzéseidet."
                   />
                 </div>
-
-                <div>
-                  <label className="text-sm text-muted">
-                    Maximum fizetés (bruttó / hónap)
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    value={salaryMax}
-                    onChange={(e) => setSalaryMax(e.target.value)}
-                    placeholder="Pl. 1200000"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm text-muted">Leírás / jegyzetek</label>
-                <textarea
-                  className="mt-2 w-full rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted-2 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
-                  rows={5}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Illeszd be az álláshirdetés fontos részeit vagy a saját megjegyzéseidet."
-                />
-              </div>
+              </section>
 
               {error && (
-                <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
                   {error}
                 </div>
               )}
 
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <p className="text-xs text-muted-2">
-                  Az új állás alapértelmezett státusza:{" "}
-                  <span className="font-medium text-foreground">Saved</span>
-                </p>
+              <div className="flex flex-col gap-4 rounded-3xl border border-[var(--border)] bg-[var(--soft)] p-5 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-sm font-medium text-[var(--foreground)]">
+                    Mentésre kész
+                  </p>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    Az új állás alapértelmezett státusza:{" "}
+                    <span className="font-medium text-[var(--foreground)]">
+                      Saved
+                    </span>
+                  </p>
+                </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex items-center justify-center rounded-2xl bg-[var(--primary)] px-6 py-3 text-sm font-medium text-[var(--primary-foreground)] shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {loading ? "Mentés..." : "Állás mentése"}
                 </button>

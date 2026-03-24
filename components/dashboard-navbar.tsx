@@ -88,16 +88,12 @@ export default function DashboardNavbar() {
         </div>
 
         <div className="flex items-center gap-3">
-        <ThemeProvider>
-          <div className="hidden md:inline-flex">
-            <ThemeToggle />
-          </div>
-        </ThemeProvider>
-          <div className="rounded-full border border-border bg-surface px-3 py-2 text-sm text-muted">
-            App
-          </div>
+          <ThemeProvider>
+            <div className="hidden md:inline-flex">
+              <ThemeToggle />
+            </div>
+          </ThemeProvider>
         </div>
-
       </div>
     </header>
   );
