@@ -3,6 +3,7 @@
 JobFlow is a modern full-stack web application that helps you track, manage, and optimize your job applications with AI-powered insights.
 
 🔗 **Live Demo:** https://job-flow-wheat.vercel.app 
+
 🔗 **GitHub Repo:** https://github.com/KovacsAttilaSandor/jobflow  
 
 ---
