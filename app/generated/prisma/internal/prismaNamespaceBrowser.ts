@@ -183,6 +183,7 @@ export const MatchScoreScalarFieldEnum = {
   summary: 'summary',
   strengths: 'strengths',
   gaps: 'gaps',
+  outputLanguage: 'outputLanguage',
   createdAt: 'createdAt'
 } as const
 

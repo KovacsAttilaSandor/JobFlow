@@ -14,7 +14,7 @@ export default function LogoutButton() {
       onClick={handleLogout}
       className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-foreground transition hover:bg-surface-2"
     >
-      Kijelentkezés
+      Sign out
     </button>
   );
 }

@@ -28,7 +28,7 @@ function SkeletonText({ className = "" }: { className?: string }) {
         <div className="mx-auto max-w-5xl px-6 py-8">
           <div className="inline-flex items-center gap-2 text-sm text-slate-500">
             <span>←</span>
-            <span>Vissza az álláshoz</span>
+            <span>Back to job</span>
           </div>
   
           <section className="mt-6 overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">

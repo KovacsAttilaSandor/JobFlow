@@ -1,6 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import {
+  AiOutputLanguageSelect,
+  useAiOutputLanguage,
+} from "@/components/ai-output-language";
+import { buildAiGenerationQuery } from "@/lib/ai-output-language";
 
 type SummaryResult = {
   summary: string;
@@ -167,19 +172,32 @@ export default function JobAiInsights({
 
   const [activeTab, setActiveTab] = useState<TabKey>(defaultTab);
 
+  const { lang, setLang } = useAiOutputLanguage();
+
+  const aiBusy =
+    loadingSummary ||
+    loadingMatch ||
+    loadingLetter ||
+    loadingPrep ||
+    loadingAll;
+
   async function generateSummary() {
     setLoadingSummary(true);
     setError("");
 
     try {
-      const res = await fetch(`/api/jobs/${jobId}/summary`, {
+      const q = buildAiGenerationQuery({
+        regenerate: Boolean(summaryResult),
+        lang,
+      });
+      const res = await fetch(`/api/jobs/${jobId}/summary${q}`, {
         method: "POST",
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Nem sikerült summary-t generálni.");
+        setError(data.error || "Failed to generate summary.");
         return;
       }
 
@@ -187,7 +205,7 @@ export default function JobAiInsights({
       setActiveTab("summary");
     } catch (err) {
       console.error(err);
-      setError("Hiba történt a summary generálása közben.");
+      setError("Something went wrong while generating the summary.");
     } finally {
       setLoadingSummary(false);
     }
@@ -198,14 +216,18 @@ export default function JobAiInsights({
     setError("");
 
     try {
-      const res = await fetch(`/api/jobs/${jobId}/match-score`, {
+      const q = buildAiGenerationQuery({
+        regenerate: Boolean(matchResult),
+        lang,
+      });
+      const res = await fetch(`/api/jobs/${jobId}/match-score${q}`, {
         method: "POST",
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Nem sikerült match score-t generálni.");
+        setError(data.error || "Failed to generate match score.");
         return;
       }
 
@@ -213,7 +235,7 @@ export default function JobAiInsights({
       setActiveTab("match");
     } catch (err) {
       console.error(err);
-      setError("Hiba történt a match score generálása közben.");
+      setError("Something went wrong while generating the match score.");
     } finally {
       setLoadingMatch(false);
     }
@@ -224,14 +246,18 @@ export default function JobAiInsights({
     setError("");
 
     try {
-      const res = await fetch(`/api/jobs/${jobId}/cover-letter`, {
+      const q = buildAiGenerationQuery({
+        regenerate: coverLetter.trim().length > 0,
+        lang,
+      });
+      const res = await fetch(`/api/jobs/${jobId}/cover-letter${q}`, {
         method: "POST",
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Nem sikerült cover lettert generálni.");
+        setError(data.error || "Failed to generate cover letter.");
         return;
       }
 
@@ -239,7 +265,7 @@ export default function JobAiInsights({
       setActiveTab("cover");
     } catch (err) {
       console.error(err);
-      setError("Hiba történt a cover letter generálása közben.");
+      setError("Something went wrong while generating the cover letter.");
     } finally {
       setLoadingLetter(false);
     }
@@ -250,14 +276,18 @@ export default function JobAiInsights({
     setError("");
 
     try {
-      const res = await fetch(`/api/jobs/${jobId}/interview-prep`, {
+      const q = buildAiGenerationQuery({
+        regenerate: Boolean(prepResult),
+        lang,
+      });
+      const res = await fetch(`/api/jobs/${jobId}/interview-prep${q}`, {
         method: "POST",
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Nem sikerült interview prep-et generálni.");
+        setError(data.error || "Failed to generate interview prep.");
         return;
       }
 
@@ -265,7 +295,7 @@ export default function JobAiInsights({
       setActiveTab("prep");
     } catch (err) {
       console.error(err);
-      setError("Hiba történt az interview prep generálása közben.");
+      setError("Something went wrong while generating interview prep.");
     } finally {
       setLoadingPrep(false);
     }
@@ -276,10 +306,16 @@ export default function JobAiInsights({
     setError("");
 
     try {
+      const q = buildAiGenerationQuery({
+        regenerate: Boolean(
+          summaryResult || matchResult || coverLetter.trim()
+        ),
+        lang,
+      });
       const [summaryRes, matchRes, letterRes] = await Promise.all([
-        fetch(`/api/jobs/${jobId}/summary`, { method: "POST" }),
-        fetch(`/api/jobs/${jobId}/match-score`, { method: "POST" }),
-        fetch(`/api/jobs/${jobId}/cover-letter`, { method: "POST" }),
+        fetch(`/api/jobs/${jobId}/summary${q}`, { method: "POST" }),
+        fetch(`/api/jobs/${jobId}/match-score${q}`, { method: "POST" }),
+        fetch(`/api/jobs/${jobId}/cover-letter${q}`, { method: "POST" }),
       ]);
 
       const summaryData = await summaryRes.json();
@@ -287,17 +323,17 @@ export default function JobAiInsights({
       const letterData = await letterRes.json();
 
       if (!summaryRes.ok) {
-        setError(summaryData.error || "Summary generálás sikertelen.");
+        setError(summaryData.error || "Summary generation failed.");
         return;
       }
 
       if (!matchRes.ok) {
-        setError(matchData.error || "Match score generálás sikertelen.");
+        setError(matchData.error || "Match score generation failed.");
         return;
       }
 
       if (!letterRes.ok) {
-        setError(letterData.error || "Cover letter generálás sikertelen.");
+        setError(letterData.error || "Cover letter generation failed.");
         return;
       }
 
@@ -307,7 +343,7 @@ export default function JobAiInsights({
       setActiveTab("summary");
     } catch (err) {
       console.error(err);
-      setError("Hiba történt az AI elemzés közben.");
+      setError("Something went wrong during AI analysis.");
     } finally {
       setLoadingAll(false);
     }
@@ -344,14 +380,22 @@ export default function JobAiInsights({
             </div>
 
             <h2 className="mt-4 text-2xl font-semibold tracking-tight">
-              AI elemzések ehhez az álláshoz
+              AI insights for this job
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-slate-400">
-              Generálj intelligens összefoglalót, CV match score-t és személyre
-              szabott cover lettert egy modernebb, áttekinthető felületen.
+              Generate a smart summary, résumé match score, and tailored cover
+              letter in one clear workspace.
             </p>
           </div>
+
+          <div className="flex w-full flex-col gap-4 lg:max-w-sm lg:shrink-0">
+            <AiOutputLanguageSelect
+              id={`ai-output-lang-${jobId}`}
+              lang={lang}
+              onChange={setLang}
+              disabled={aiBusy}
+            />
 
           <div className="flex flex-wrap gap-3">
             <button
@@ -359,7 +403,11 @@ export default function JobAiInsights({
               disabled={loadingSummary}
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-60"
             >
-              {loadingSummary ? "Summary..." : "Summary"}
+              {loadingSummary
+                ? "Summary..."
+                : summaryResult
+                  ? "Regenerate summary"
+                  : "Summary"}
             </button>
 
             <button
@@ -367,7 +415,11 @@ export default function JobAiInsights({
               disabled={loadingMatch}
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-60"
             >
-              {loadingMatch ? "Match..." : "Match score"}
+              {loadingMatch
+                ? "Match..."
+                : matchResult
+                  ? "Regenerate match"
+                  : "Match score"}
             </button>
 
             <button
@@ -375,7 +427,11 @@ export default function JobAiInsights({
               disabled={loadingLetter}
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-60"
             >
-              {loadingLetter ? "Letter..." : "Cover letter"}
+              {loadingLetter
+                ? "Letter..."
+                : coverLetter.trim()
+                  ? "Regenerate letter"
+                  : "Cover letter"}
             </button>
 
             <button
@@ -383,7 +439,11 @@ export default function JobAiInsights({
               disabled={loadingPrep}
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-60"
             >
-              {loadingPrep ? "Prep..." : "Interview prep"}
+              {loadingPrep
+                ? "Prep..."
+                : prepResult
+                  ? "Regenerate prep"
+                  : "Interview prep"}
             </button>
 
             <button
@@ -391,8 +451,13 @@ export default function JobAiInsights({
               disabled={loadingAll}
               className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-slate-950 transition hover:opacity-90 disabled:opacity-60"
             >
-              {loadingAll ? "Generálás..." : "Generate all"}
+              {loadingAll
+                ? "Generating..."
+                : summaryResult || matchResult || coverLetter.trim()
+                  ? "Regenerate all"
+                  : "Generate all"}
             </button>
+          </div>
           </div>
         </div>
       </div>
@@ -448,7 +513,7 @@ export default function JobAiInsights({
               <div className="space-y-6">
                 <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-6">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                    Összegzés
+                    Summary
                   </p>
                   <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-300">
                     {summaryResult.summary}
@@ -458,7 +523,7 @@ export default function JobAiInsights({
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-6">
                     <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                      Feladatok
+                      Responsibilities
                     </p>
                     <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
                       {summaryResult.responsibilities.map((item, index) => (
@@ -469,7 +534,7 @@ export default function JobAiInsights({
 
                   <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-6">
                     <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                      Elvárások
+                      Requirements
                     </p>
                     <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
                       {summaryResult.requirements.map((item, index) => (
@@ -496,7 +561,7 @@ export default function JobAiInsights({
                 </div>
               </div>
             ) : (
-              <EmptyAiState text="Még nincs summary generálva ehhez az álláshoz." />
+              <EmptyAiState text="No summary generated for this job yet." />
             )}
           </>
         )}
@@ -509,7 +574,7 @@ export default function JobAiInsights({
                   <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                     <div className="max-w-3xl">
                       <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                        Elemzés összegzés
+                        Analysis summary
                       </p>
                       <p className="mt-4 text-sm leading-7 text-slate-300">
                         {matchResult.summary}
@@ -549,7 +614,7 @@ export default function JobAiInsights({
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-6">
                     <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                      Erősségek
+                      Strengths
                     </p>
                     <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
                       {matchResult.strengths.map((item, index) => (
@@ -560,7 +625,7 @@ export default function JobAiInsights({
 
                   <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-6">
                     <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                      Hiányosságok
+                      Gaps
                     </p>
                     <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
                       {matchResult.gaps.map((item, index) => (
@@ -571,7 +636,7 @@ export default function JobAiInsights({
                 </div>
               </div>
             ) : (
-              <EmptyAiState text="Még nincs match score generálva ehhez az álláshoz." />
+              <EmptyAiState text="No match score generated for this job yet." />
             )}
           </>
         )}
@@ -586,7 +651,7 @@ export default function JobAiInsights({
                       Cover letter
                     </p>
                     <p className="mt-2 text-sm text-slate-400">
-                      Személyre szabott, másolható motivációs levél.
+                      Tailored, copy-ready cover letter.
                     </p>
                   </div>
 
@@ -599,7 +664,7 @@ export default function JobAiInsights({
                     }`}
                   >
                     {copied ? <CheckIcon /> : <CopyIcon />}
-                    <span>{copied ? "Kimásolva" : "Másolás"}</span>
+                    <span>{copied ? "Copied" : "Copy"}</span>
                   </button>
                 </div>
 
@@ -610,7 +675,7 @@ export default function JobAiInsights({
                 </div>
               </div>
             ) : (
-              <EmptyAiState text="Még nincs cover letter generálva ehhez az álláshoz." />
+              <EmptyAiState text="No cover letter generated for this job yet." />
             )}
           </>
         )}
@@ -621,7 +686,7 @@ export default function JobAiInsights({
               <div className="space-y-6">
                 <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-6">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                    30 másodperces pitch
+                    30-second pitch
                   </p>
                   <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-slate-300">
                     {prepResult.pitch30s}
@@ -631,7 +696,7 @@ export default function JobAiInsights({
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="rounded-3xl border border-white/10 bg-slate-950/40 p-6">
                     <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                      Kérdések
+                      Questions
                     </p>
                     <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
                       {prepResult.questions.map((item, index) => (
@@ -664,7 +729,7 @@ export default function JobAiInsights({
                 </div>
               </div>
             ) : (
-              <EmptyAiState text="Még nincs interview prep generálva ehhez az álláshoz." />
+              <EmptyAiState text="No interview prep generated for this job yet." />
             )}
           </>
         )}

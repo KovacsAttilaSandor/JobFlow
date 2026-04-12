@@ -75,14 +75,14 @@ export default function JobDetailActions({
       });
 
       if (!res.ok) {
-        throw new Error("Nem sikerült menteni a státuszt.");
+        throw new Error("Failed to save status.");
       }
 
       router.refresh();
     } catch (error) {
       console.error(error);
       setStatus(previous);
-      alert("Nem sikerült menteni a státuszt.");
+      alert("Failed to save status.");
     } finally {
       setIsSaving(false);
     }
@@ -90,7 +90,7 @@ export default function JobDetailActions({
 
   async function handleDelete() {
     const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd ezt az állást?"
+      "Delete this job?"
     );
 
     if (!confirmed) return;
@@ -103,14 +103,14 @@ export default function JobDetailActions({
       });
 
       if (!res.ok) {
-        throw new Error("Nem sikerült törölni az állást.");
+        throw new Error("Failed to delete job.");
       }
 
       router.push("/jobs");
       router.refresh();
     } catch (error) {
       console.error(error);
-      alert("Nem sikerült törölni az állást.");
+      alert("Failed to delete job.");
     } finally {
       setIsDeleting(false);
     }
@@ -121,19 +121,19 @@ export default function JobDetailActions({
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.18em] text-muted-2">
-            Műveletek
+            Actions
           </p>
           <h3 className="mt-2 text-lg font-semibold text-foreground">
-            Állás kezelése
+            Manage job
           </h3>
           <p className="mt-1 text-sm text-muted-2">
-            Státusz váltása, szerkesztés és törlés.
+            Change status, edit, or delete.
           </p>
         </div>
 
         {isSaving && (
           <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
-            Mentés...
+            Saving...
           </span>
         )}
       </div>
@@ -157,7 +157,7 @@ export default function JobDetailActions({
           href={`/jobs/${jobId}/edit`}
           className="flex-1 rounded-2xl border border-border bg-surface px-4 py-3 text-center text-sm font-medium text-foreground transition hover:bg-surface-2"
         >
-          Állás szerkesztése
+          Edit job
         </Link>
 
         <button
@@ -165,7 +165,7 @@ export default function JobDetailActions({
           disabled={isDeleting}
           className="flex-1 rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-60"
         >
-          {isDeleting ? "Törlés..." : "Állás törlése"}
+          {isDeleting ? "Deleting..." : "Delete job"}
         </button>
       </div>
     </div>

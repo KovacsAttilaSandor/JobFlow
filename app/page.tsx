@@ -16,14 +16,14 @@ export default function HomePage() {
               href="/login"
               className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:bg-white/10"
             >
-              Bejelentkezés
+              Sign in
             </Link>
 
             <Link
               href="/register"
               className="rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-950 transition hover:opacity-90"
             >
-              Regisztráció
+              Register
             </Link>
           </div>
         </header>
@@ -36,15 +36,14 @@ export default function HomePage() {
               </div>
 
               <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-6xl">
-                Kövesd az
-                <span className="block text-blue-400">állásjelentkezéseidet</span>
-                egy helyen
+                Track your
+                <span className="block text-blue-400">job applications</span>
+                in one place
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-400">
-                A JobFlow segít rendszerezni az állásokat, követni az interjúkat,
-                kezelni a státuszokat, és AI segítségével elemezni a CV-det az
-                egyes pozíciókhoz.
+                JobFlow helps you organize roles, follow interviews, manage
+                statuses, and use AI to analyze your résumé for each position.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
@@ -52,14 +51,14 @@ export default function HomePage() {
                   href="/register"
                   className="rounded-2xl bg-white px-6 py-3 font-medium text-slate-950 transition hover:opacity-90"
                 >
-                  Kezdés
+                  Get started
                 </Link>
 
                 <Link
                   href="/login"
                   className="rounded-2xl border border-white/10 bg-white/5 px-6 py-3 font-medium text-white transition hover:bg-white/10"
                 >
-                  Már van fiókom
+                  I already have an account
                 </Link>
               </div>
             </div>
@@ -69,12 +68,12 @@ export default function HomePage() {
                 <div className="text-sm text-slate-400">Dashboard</div>
                 <div className="mt-4 text-3xl font-semibold">24</div>
                 <div className="mt-1 text-sm text-slate-500">
-                  Összes jelentkezés
+                  Total applications
                 </div>
               </div>
 
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-                <div className="text-sm text-slate-400">Aktív</div>
+                <div className="text-sm text-slate-400">Active</div>
                 <div className="mt-4 text-3xl font-semibold">8</div>
                 <div className="mt-1 text-sm text-slate-500">
                   Applied + Interviewing
@@ -82,20 +81,20 @@ export default function HomePage() {
               </div>
 
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:col-span-2">
-                <div className="text-sm text-slate-400">Mit tud a rendszer?</div>
+                <div className="text-sm text-slate-400">What you get</div>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
                     <div className="font-medium">Job tracking</div>
                     <div className="mt-2 text-sm text-slate-400">
-                      Státuszok, board nézet, események.
+                      Statuses, board view, and events.
                     </div>
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
-                    <div className="font-medium">CV upload</div>
+                    <div className="font-medium">Résumé upload</div>
                     <div className="mt-2 text-sm text-slate-400">
-                      PDF feltöltés és szövegkinyerés.
+                      PDF upload and text extraction.
                     </div>
                   </div>
         

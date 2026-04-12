@@ -33,7 +33,7 @@ function EditJobPageSkeleton() {
       <div className="mx-auto max-w-5xl px-6 py-8">
         <div className="inline-flex items-center gap-2 text-sm text-slate-500">
           <span>←</span>
-          <span>Vissza az álláshoz</span>
+          <span>Back to job</span>
         </div>
 
         <section className="mt-6 overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
@@ -186,13 +186,13 @@ export default function EditJobPage() {
         });
 
         if (!res.ok) {
-          throw new Error("Nem sikerült betölteni az állást.");
+          throw new Error("Failed to load job.");
         }
 
         const data = await res.json();
 
         if (!data) {
-          throw new Error("Az állás nem található.");
+          throw new Error("Job not found.");
         }
 
         const tagNames = Array.isArray(data.tags)
@@ -223,7 +223,7 @@ export default function EditJobPage() {
         setUpdatedAt(data.updatedAt ?? null);
       } catch (err) {
         console.error(err);
-        setError("Nem sikerült betölteni az állás adatait.");
+        setError("Failed to load job data.");
       } finally {
         setIsLoadingJob(false);
       }
@@ -266,14 +266,14 @@ export default function EditJobPage() {
       });
 
       if (!res.ok) {
-        throw new Error("Nem sikerült menteni az állást.");
+        throw new Error("Failed to save job.");
       }
 
       router.push(`/jobs/${jobId}`);
       router.refresh();
     } catch (err) {
       console.error(err);
-      setError("Nem sikerült menteni a módosításokat.");
+      setError("Failed to save changes.");
     } finally {
       setIsSaving(false);
     }
@@ -291,7 +291,7 @@ export default function EditJobPage() {
           className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
         >
           <span>←</span>
-          <span>Vissza az álláshoz</span>
+          <span>Back to job</span>
         </a>
 
         <section className="mt-6 overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
@@ -302,39 +302,39 @@ export default function EditJobPage() {
                   Edit job
                 </div>
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Állás szerkesztése
+                  Edit job
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-                  Módosítsd a pozíció adatait és mentsd el a változtatásokat.
+                  Update the role details and save your changes.
                 </p>
 
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                   {createdAt && (
                     <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-                      Létrehozva:{" "}
-                      {new Date(createdAt).toLocaleDateString("hu-HU")}
+                      Created:{" "}
+                      {new Date(createdAt).toLocaleDateString("en-US")}
                     </span>
                   )}
                   {updatedAt && (
                     <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-                      Frissítve:{" "}
-                      {new Date(updatedAt).toLocaleDateString("hu-HU")}
+                      Updated:{" "}
+                      {new Date(updatedAt).toLocaleDateString("en-US")}
                     </span>
                   )}
                 </div>
               </div>
 
               <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/30 p-5">
-                <p className="text-sm font-medium text-white">Gyors műveletek</p>
+                <p className="text-sm font-medium text-white">Quick actions</p>
                 <p className="mt-1 text-xs text-slate-400">
-                  Mentés után visszairányít a részletező oldalra.
+                  After saving, you’ll return to the job detail page.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <a
                     href={`/jobs/${jobId}`}
                     className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:bg-white/10"
                   >
-                    Mégse
+                    Cancel
                   </a>
                   <button
                     form="edit-job-form"
@@ -342,7 +342,7 @@ export default function EditJobPage() {
                     disabled={isSaving}
                     className="rounded-2xl bg-white px-4 py-2 text-sm font-medium text-slate-950 transition hover:opacity-90 disabled:opacity-60"
                   >
-                    {isSaving ? "Mentés..." : "Mentés"}
+                    {isSaving ? "Saving..." : "Save"}
                   </button>
                 </div>
               </div>
@@ -353,19 +353,19 @@ export default function EditJobPage() {
             <form id="edit-job-form" onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
-                  <h2 className="text-lg font-semibold">Alapadatok</h2>
+                  <h2 className="text-lg font-semibold">Basics</h2>
                   <p className="mt-1 text-sm text-slate-400">
-                    Ezek jelennek meg a listában és a részletező oldalon is.
+                    Shown in the list and job detail views.
                   </p>
 
                   <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="sm:col-span-2">
                       <label className="mb-2 block text-sm text-slate-300">
-                        Pozíció
+                        Title
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. Full-Stack Developer"
+                        placeholder="e.g. Full-Stack Developer"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         required
@@ -374,11 +374,11 @@ export default function EditJobPage() {
 
                     <div className="sm:col-span-2">
                       <label className="mb-2 block text-sm text-slate-300">
-                        Cég
+                        Company
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. Acme Kft."
+                        placeholder="e.g. Acme Inc."
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
                         required
@@ -387,11 +387,11 @@ export default function EditJobPage() {
 
                     <div>
                       <label className="mb-2 block text-sm text-slate-300">
-                        Helyszín
+                        Location
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. Budapest / Remote"
+                        placeholder="e.g. London / Remote"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                       />
@@ -399,11 +399,11 @@ export default function EditJobPage() {
 
                     <div>
                       <label className="mb-2 block text-sm text-slate-300">
-                        Forrás
+                        Source
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. LinkedIn"
+                        placeholder="e.g. LinkedIn"
                         value={source}
                         onChange={(e) => setSource(e.target.value)}
                       />
@@ -415,18 +415,18 @@ export default function EditJobPage() {
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. remote, high priority, referral"
+                        placeholder="e.g. remote, high priority, referral"
                         value={tagsText}
                         onChange={(e) => setTagsText(e.target.value)}
                       />
                       <p className="mt-2 text-xs text-slate-500">
-                        Vesszővel elválasztva. Max 12 tag.
+                        Comma-separated. Max 12 tags.
                       </p>
                     </div>
 
                     <div className="sm:col-span-2">
                       <label className="mb-2 block text-sm text-slate-300">
-                        Állás link
+                        Job link
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
@@ -442,7 +442,7 @@ export default function EditJobPage() {
                           rel="noreferrer noopener"
                           className="mt-2 inline-block text-sm text-blue-300 underline underline-offset-4 transition hover:text-blue-200"
                         >
-                          Megnyitás új lapon
+                          Open in new tab
                         </a>
                       ) : null}
                     </div>
@@ -450,15 +450,15 @@ export default function EditJobPage() {
                 </div>
 
                 <div className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
-                  <h2 className="text-lg font-semibold">Státusz & bér</h2>
+                  <h2 className="text-lg font-semibold">Status & salary</h2>
                   <p className="mt-1 text-sm text-slate-400">
-                    Opcionális mezők, de sokat segítenek a döntésben és szűrésben.
+                    Optional fields that help with decisions and filtering.
                   </p>
 
                   <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="sm:col-span-2">
                       <label className="mb-2 block text-sm text-slate-300">
-                        Státusz
+                        Status
                       </label>
                       <select
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
@@ -476,11 +476,11 @@ export default function EditJobPage() {
 
                     <div>
                       <label className="mb-2 block text-sm text-slate-300">
-                        Min. bér
+                        Min salary
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. 800000"
+                        placeholder="e.g. 80000"
                         value={salaryMin}
                         onChange={(e) => setSalaryMin(e.target.value)}
                         inputMode="numeric"
@@ -489,11 +489,11 @@ export default function EditJobPage() {
 
                     <div>
                       <label className="mb-2 block text-sm text-slate-300">
-                        Max. bér
+                        Max salary
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. 1200000"
+                        placeholder="e.g. 120000"
                         value={salaryMax}
                         onChange={(e) => setSalaryMax(e.target.value)}
                         inputMode="numeric"
@@ -502,17 +502,17 @@ export default function EditJobPage() {
 
                     <div className="sm:col-span-2">
                       <label className="mb-2 block text-sm text-slate-300">
-                        Pénznem
+                        Currency
                       </label>
                       <input
                         className="w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                        placeholder="pl. HUF / EUR / USD"
+                        placeholder="e.g. USD / EUR / GBP"
                         value={currency}
                         onChange={(e) => setCurrency(e.target.value)}
                       />
                       <p className="mt-2 text-xs text-slate-500">
-                        Tipp: ha üresen hagyod, a bérsáv a pénznem nélkül fog
-                        megjelenni.
+                        Tip: if left empty, the salary range shows without a
+                        currency code.
                       </p>
                     </div>
                   </div>
@@ -520,13 +520,13 @@ export default function EditJobPage() {
               </div>
 
               <div className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
-                <h2 className="text-lg font-semibold">Leírás</h2>
+                <h2 className="text-lg font-semibold">Description</h2>
                 <p className="mt-1 text-sm text-slate-400">
-                  Ide jöhet a hirdetés szövege, jegyzetek, to-do, stb.
+                  Paste the posting, notes, to-dos, etc.
                 </p>
                 <textarea
                   className="mt-5 min-h-[220px] w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-white outline-none transition focus:border-white/20"
-                  placeholder="Állás leírása"
+                  placeholder="Job description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -543,14 +543,14 @@ export default function EditJobPage() {
                   href={`/jobs/${jobId}`}
                   className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white transition hover:bg-white/10"
                 >
-                  Mégse
+                  Cancel
                 </a>
                 <button
                   type="submit"
                   disabled={isSaving}
                   className="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-medium text-slate-950 transition hover:opacity-90 disabled:opacity-60"
                 >
-                  {isSaving ? "Mentés..." : "Módosítások mentése"}
+                  {isSaving ? "Saving..." : "Save changes"}
                 </button>
               </div>
             </form>

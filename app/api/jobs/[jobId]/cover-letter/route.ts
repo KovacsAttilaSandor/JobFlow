@@ -1,6 +1,13 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { gemini } from "@/lib/gemini";
+import {
+  aiOutputLanguageEnglishName,
+  getAiOutputLanguageFromRequest,
+  parseStoredCoverLetterMeta,
+  serializeCoverLetterForStorage,
+} from "@/lib/ai-output-language";
+import { isAiRegenerateRequest } from "@/lib/is-ai-regenerate-request";
 import { NextResponse } from "next/server";
 
 import { Ratelimit } from "@upstash/ratelimit";
@@ -10,7 +17,7 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 req / perc / user
+  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 request / min / user
 });
 
 export async function POST(
@@ -75,25 +82,19 @@ export async function POST(
       );
     }
 
-    // 🧠 DUPLICATION VÉDELEM
-    if (job.aiCoverLetter && job.aiCoverLetterUpdatedAt) {
-      return NextResponse.json({
-        coverLetter: job.aiCoverLetter,
-      });
-    }
+    const regenerate = isAiRegenerateRequest(req);
+    const outputLang = getAiOutputLanguageFromRequest(req);
 
-    // ⏱️ COOLDOWN (30 sec)
-    const cooldown = 30 * 1000;
-
-    if (
-      job.aiCoverLetterUpdatedAt &&
-      Date.now() - job.aiCoverLetterUpdatedAt.getTime() < cooldown
-    ) {
-      return NextResponse.json(
-        { error: "Please wait before regenerating." },
-        { status: 429 }
+    if (!regenerate && job.aiCoverLetter?.trim()) {
+      const { text, outputLanguage: cachedLang } = parseStoredCoverLetterMeta(
+        job.aiCoverLetter
       );
+      if (cachedLang === outputLang && text.trim()) {
+        return NextResponse.json({ coverLetter: text });
+      }
     }
+
+    const languageName = aiOutputLanguageEnglishName(outputLang);
 
     const prompt = `
 Write a concise, professional, personalized cover letter for this job application.
@@ -106,7 +107,7 @@ Rules:
 - Tailor it to the job description
 - Do not invent fake experience
 - Do not use placeholders like [Company Name]
-- Language: Hungarian
+- Write the entire letter in ${languageName}
 
 Candidate name:
 ${user.name || "The candidate"}
@@ -143,7 +144,7 @@ ${cv.rawText}
         id: job.id,
       },
       data: {
-        aiCoverLetter: text,
+        aiCoverLetter: serializeCoverLetterForStorage(text, outputLang),
         aiCoverLetterUpdatedAt: new Date(),
       },
     });

@@ -16,7 +16,7 @@ export default function NewJobPage() {
   const [tagsText, setTagsText] = useState("");
   const [salaryMin, setSalaryMin] = useState("");
   const [salaryMax, setSalaryMax] = useState("");
-  const [currency, setCurrency] = useState("HUF");
+  const [currency, setCurrency] = useState("USD");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -26,7 +26,7 @@ export default function NewJobPage() {
 
   async function autofillFromAi() {
     if (aiJobText.trim().length < 50) {
-      setAiError("Kérlek, illessz be legalább pár mondatnyi álláshirdetést.");
+      setAiError("Paste at least a few sentences from the job posting.");
       return;
     }
 
@@ -47,7 +47,7 @@ export default function NewJobPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setAiError(data?.error || "Nem sikerült az AI kitöltés.");
+        setAiError(data?.error || "AI autofill failed.");
         return;
       }
 
@@ -61,7 +61,7 @@ export default function NewJobPage() {
       if (data.description) setDescription(String(data.description));
     } catch (err) {
       console.error(err);
-      setAiError("Hiba történt az AI kitöltés közben.");
+      setAiError("Something went wrong during AI autofill.");
     } finally {
       setAiLoading(false);
     }
@@ -100,7 +100,7 @@ export default function NewJobPage() {
     setLoading(false);
 
     if (!res.ok) {
-      setError("Nem sikerült létrehozni az állást.");
+      setError("Failed to create job.");
       return;
     }
 
@@ -126,12 +126,12 @@ export default function NewJobPage() {
                 </div>
 
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Új állás hozzáadása 
+                  Add a new job
                 </h1>
 
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
-                  Add meg a pozíció legfontosabb adatait, vagy használd az AI
-                  kitöltést, hogy gyorsabban rögzíthesd az álláshirdetést.
+                  Enter the key details for the role, or use AI autofill to
+                  capture the posting faster.
                 </p>
               </div>
             </div>
@@ -145,11 +145,10 @@ export default function NewJobPage() {
               >
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold">Gyors felvitel AI-val</h2>
+                    <h2 className="text-lg font-semibold">Quick capture with AI</h2>
                     <p className="mt-1 text-sm leading-6 text-[var(--muted-foreground)]">
-                      Illeszd be az álláshirdetés szövegét, és az AI megpróbálja
-                      kitölteni a fontos mezőket: pozíció, cég, helyszín, bér,
-                      forrás és leírás.
+                      Paste the job ad text and AI will try to fill title,
+                      company, location, salary, source, and description.
                     </p>
                   </div>
 
@@ -159,26 +158,26 @@ export default function NewJobPage() {
                     disabled={aiLoading}
                     className="rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-medium text-[var(--primary-foreground)] transition hover:opacity-90 disabled:opacity-60"
                   >
-                    {aiLoading ? "Kitöltés..." : "Mezők kitöltése AI-val"}
+                    {aiLoading ? "Filling..." : "Autofill with AI"}
                   </button>
                 </div>
 
                 <div className="mt-5 space-y-4">
                   <div>
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Álláshirdetés szövege
+                      Job posting text
                     </label>
                     <textarea
                       className="mt-2 min-h-[180px] w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={aiJobText}
                       onChange={(e) => setAiJobText(e.target.value)}
-                      placeholder="Illeszd be ide a teljes hirdetést vagy a legfontosabb részeit..."
+                      placeholder="Paste the full posting or the most important parts..."
                     />
                   </div>
 
                   <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-xs text-[var(--muted-foreground)]">
-                    Tipp: ha a Job URL mezőt is kitöltöd, a rendszer eltárolja,
-                    és az AI kontextusként is fel tudja használni.
+                    Tip: if you fill in the Job URL field, it is saved and the
+                    AI can use it as extra context.
                   </div>
                 </div>
 
@@ -194,61 +193,60 @@ export default function NewJobPage() {
                 style={{ boxShadow: "var(--shadow-soft)" }}
               >
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold">Alapadatok</h2>
+                  <h2 className="text-lg font-semibold">Basics</h2>
                   <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                    Ezek az információk jelennek meg a lista-, board- és detail
-                    nézetekben.
+                    Shown in list, board, and detail views.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div className="md:col-span-2">
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Pozíció
+                      Title
                     </label>
                     <input
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Pl. Senior Frontend fejlesztő"
+                      placeholder="e.g. Senior Frontend Engineer"
                       required
                     />
                   </div>
 
                   <div>
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Cég
+                      Company
                     </label>
                     <input
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      placeholder="Pl. Acme Zrt."
+                      placeholder="e.g. Acme Inc."
                       required
                     />
                   </div>
 
                   <div>
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Helyszín
+                      Location
                     </label>
                     <input
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Pl. Budapest / Hybrid / Remote"
+                      placeholder="e.g. London / Hybrid / Remote"
                     />
                   </div>
 
                   <div>
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Forrás
+                      Source
                     </label>
                     <input
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={source}
                       onChange={(e) => setSource(e.target.value)}
-                      placeholder="Pl. LinkedIn, Profession, Referral"
+                      placeholder="e.g. LinkedIn, Indeed, Referral"
                     />
                   </div>
 
@@ -260,22 +258,22 @@ export default function NewJobPage() {
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={jobUrl}
                       onChange={(e) => setJobUrl(e.target.value)}
-                      placeholder="Az álláshirdetés linkje"
+                      placeholder="Link to the job posting"
                     />
                   </div>
 
                   <div className="md:col-span-2">
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Tag-ek
+                      Tags
                     </label>
                     <input
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={tagsText}
                       onChange={(e) => setTagsText(e.target.value)}
-                      placeholder="pl. remote, high priority, referral"
+                      placeholder="e.g. remote, high priority, referral"
                     />
                     <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-                      Vesszővel elválasztva. Maximum 12 tag.
+                      Comma-separated. Maximum 12 tags.
                     </p>
                   </div>
                 </div>
@@ -286,29 +284,29 @@ export default function NewJobPage() {
                 style={{ boxShadow: "var(--shadow-soft)" }}
               >
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold">Fizetés és részletek</h2>
+                  <h2 className="text-lg font-semibold">Compensation & details</h2>
                   <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-                    Opcionális mezők, amelyek segítik az összehasonlítást és a
-                    későbbi döntést.
+                    Optional fields that help you compare options and decide
+                    later.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                   <div>
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Deviza
+                      Currency
                     </label>
                     <input
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={currency}
                       onChange={(e) => setCurrency(e.target.value)}
-                      placeholder="Pl. HUF, EUR"
+                      placeholder="e.g. USD, EUR"
                     />
                   </div>
 
                   <div>
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Minimum fizetés
+                      Minimum salary
                     </label>
                     <input
                       type="number"
@@ -316,13 +314,13 @@ export default function NewJobPage() {
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={salaryMin}
                       onChange={(e) => setSalaryMin(e.target.value)}
-                      placeholder="Pl. 800000"
+                      placeholder="e.g. 80000"
                     />
                   </div>
 
                   <div>
                     <label className="text-sm text-[var(--muted-foreground)]">
-                      Maximum fizetés
+                      Maximum salary
                     </label>
                     <input
                       type="number"
@@ -330,20 +328,20 @@ export default function NewJobPage() {
                       className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                       value={salaryMax}
                       onChange={(e) => setSalaryMax(e.target.value)}
-                      placeholder="Pl. 1200000"
+                      placeholder="e.g. 120000"
                     />
                   </div>
                 </div>
 
                 <div className="mt-6">
                   <label className="text-sm text-[var(--muted-foreground)]">
-                    Leírás / jegyzetek
+                    Description / notes
                   </label>
                   <textarea
                     className="mt-2 min-h-[150px] w-full rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/70 focus:border-[var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/25"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Illeszd be az álláshirdetés fontos részeit vagy a saját megjegyzéseidet."
+                    placeholder="Paste key parts of the posting or your own notes."
                   />
                 </div>
               </section>
@@ -357,10 +355,10 @@ export default function NewJobPage() {
               <div className="flex flex-col gap-4 rounded-3xl border border-[var(--border)] bg-[var(--soft)] p-5 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-sm font-medium text-[var(--foreground)]">
-                    Mentésre kész
+                    Ready to save
                   </p>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    Az új állás alapértelmezett státusza:{" "}
+                    Default status for new jobs:{" "}
                     <span className="font-medium text-[var(--foreground)]">
                       Saved
                     </span>
@@ -372,7 +370,7 @@ export default function NewJobPage() {
                   disabled={loading}
                   className="inline-flex items-center justify-center rounded-2xl bg-[var(--primary)] px-6 py-3 text-sm font-medium text-[var(--primary-foreground)] shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {loading ? "Mentés..." : "Állás mentése"}
+                  {loading ? "Saving..." : "Save job"}
                 </button>
               </div>
             </form>

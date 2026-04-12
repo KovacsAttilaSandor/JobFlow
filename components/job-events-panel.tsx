@@ -20,7 +20,7 @@ function getEventClasses(type: string) {
 }
 
 function formatDateTime(date: string) {
-  return new Intl.DateTimeFormat("hu-HU", {
+  return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -56,7 +56,7 @@ export default function JobEventsPanel({
   }
 
   async function handleDelete(id: string) {
-    const confirmed = window.confirm("Biztosan törölni szeretnéd ezt az eventet?");
+    const confirmed = window.confirm("Delete this event?");
     if (!confirmed) return;
 
     const previous = events;
@@ -69,7 +69,7 @@ export default function JobEventsPanel({
     } catch (err) {
       console.error(err);
       setEvents(previous);
-      alert("Nem sikerült törölni az eventet.");
+      alert("Failed to delete the event.");
     }
   }
 
@@ -82,9 +82,9 @@ export default function JobEventsPanel({
     <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
       <div className="mb-5 flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold">Kapcsolódó eventek</h2>
+          <h2 className="text-xl font-semibold">Related events</h2>
           <p className="mt-1 text-sm text-slate-400">
-            Interjúk, follow-upok és határidők ehhez az álláshoz.
+            Interviews, follow-ups, and deadlines for this job.
           </p>
         </div>
 
@@ -96,14 +96,14 @@ export default function JobEventsPanel({
           }}
           className="rounded-2xl bg-white px-4 py-2 text-sm font-medium text-slate-950 transition hover:opacity-90"
         >
-          + Új event
+          + New event
         </button>
       </div>
 
       <div className="space-y-3">
         {sorted.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/10 bg-slate-950/30 p-4 text-sm text-slate-400">
-            Nincs még ehhez az álláshoz kapcsolódó event.
+            No events linked to this job yet.
           </div>
         ) : (
           sorted.map((event) => (
@@ -133,19 +133,19 @@ export default function JobEventsPanel({
                 <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-300">
                   {event.location && (
                     <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                      Helyszín: {event.location}
+                      Location: {event.location}
                     </span>
                   )}
                   {typeof event.reminderMinutesBefore === "number" && (
                     <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                      Emlékeztető: {event.reminderMinutesBefore}p
+                      Reminder: {event.reminderMinutesBefore} min
                     </span>
                   )}
                   <a
                     href={`/api/events/${event.id}/ics`}
                     className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-blue-300 hover:text-blue-200"
                   >
-                    ICS letöltés
+                    Download ICS
                   </a>
                 </div>
               )}
@@ -176,7 +176,7 @@ export default function JobEventsPanel({
                   }}
                   className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:bg-white/10"
                 >
-                  Szerkesztés
+                  Edit
                 </button>
 
                 <button
@@ -184,12 +184,12 @@ export default function JobEventsPanel({
                   onClick={() => handleDelete(event.id)}
                   className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300 transition hover:bg-red-500/15"
                 >
-                  Törlés
+                  Delete
                 </button>
 
                 {nextEvents[0]?.id === event.id && (
                   <span className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
-                    Következő
+                    Next up
                   </span>
                 )}
               </div>

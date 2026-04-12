@@ -42,6 +42,7 @@ export type MatchScoreMinAggregateOutputType = {
   summary: string | null
   strengths: string | null
   gaps: string | null
+  outputLanguage: string | null
   createdAt: Date | null
 }
 
@@ -53,6 +54,7 @@ export type MatchScoreMaxAggregateOutputType = {
   summary: string | null
   strengths: string | null
   gaps: string | null
+  outputLanguage: string | null
   createdAt: Date | null
 }
 
@@ -64,6 +66,7 @@ export type MatchScoreCountAggregateOutputType = {
   summary: number
   strengths: number
   gaps: number
+  outputLanguage: number
   createdAt: number
   _all: number
 }
@@ -85,6 +88,7 @@ export type MatchScoreMinAggregateInputType = {
   summary?: true
   strengths?: true
   gaps?: true
+  outputLanguage?: true
   createdAt?: true
 }
 
@@ -96,6 +100,7 @@ export type MatchScoreMaxAggregateInputType = {
   summary?: true
   strengths?: true
   gaps?: true
+  outputLanguage?: true
   createdAt?: true
 }
 
@@ -107,6 +112,7 @@ export type MatchScoreCountAggregateInputType = {
   summary?: true
   strengths?: true
   gaps?: true
+  outputLanguage?: true
   createdAt?: true
   _all?: true
 }
@@ -205,6 +211,7 @@ export type MatchScoreGroupByOutputType = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage: string | null
   createdAt: Date
   _count: MatchScoreCountAggregateOutputType | null
   _avg: MatchScoreAvgAggregateOutputType | null
@@ -239,6 +246,7 @@ export type MatchScoreWhereInput = {
   summary?: Prisma.StringFilter<"MatchScore"> | string
   strengths?: Prisma.StringFilter<"MatchScore"> | string
   gaps?: Prisma.StringFilter<"MatchScore"> | string
+  outputLanguage?: Prisma.StringNullableFilter<"MatchScore"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MatchScore"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -252,6 +260,7 @@ export type MatchScoreOrderByWithRelationInput = {
   summary?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   gaps?: Prisma.SortOrder
+  outputLanguage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   job?: Prisma.JobOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
@@ -268,6 +277,7 @@ export type MatchScoreWhereUniqueInput = Prisma.AtLeast<{
   summary?: Prisma.StringFilter<"MatchScore"> | string
   strengths?: Prisma.StringFilter<"MatchScore"> | string
   gaps?: Prisma.StringFilter<"MatchScore"> | string
+  outputLanguage?: Prisma.StringNullableFilter<"MatchScore"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MatchScore"> | Date | string
   job?: Prisma.XOR<Prisma.JobScalarRelationFilter, Prisma.JobWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -281,6 +291,7 @@ export type MatchScoreOrderByWithAggregationInput = {
   summary?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   gaps?: Prisma.SortOrder
+  outputLanguage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.MatchScoreCountOrderByAggregateInput
   _avg?: Prisma.MatchScoreAvgOrderByAggregateInput
@@ -300,6 +311,7 @@ export type MatchScoreScalarWhereWithAggregatesInput = {
   summary?: Prisma.StringWithAggregatesFilter<"MatchScore"> | string
   strengths?: Prisma.StringWithAggregatesFilter<"MatchScore"> | string
   gaps?: Prisma.StringWithAggregatesFilter<"MatchScore"> | string
+  outputLanguage?: Prisma.StringNullableWithAggregatesFilter<"MatchScore"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"MatchScore"> | Date | string
 }
 
@@ -309,6 +321,7 @@ export type MatchScoreCreateInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutMatchScoresInput
   user: Prisma.UserCreateNestedOneWithoutMatchScoresInput
@@ -322,6 +335,7 @@ export type MatchScoreUncheckedCreateInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
 }
 
@@ -331,6 +345,7 @@ export type MatchScoreUpdateInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutMatchScoresNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutMatchScoresNestedInput
@@ -344,6 +359,7 @@ export type MatchScoreUncheckedUpdateInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -355,6 +371,7 @@ export type MatchScoreCreateManyInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
 }
 
@@ -364,6 +381,7 @@ export type MatchScoreUpdateManyMutationInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -375,6 +393,7 @@ export type MatchScoreUncheckedUpdateManyInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -396,6 +415,7 @@ export type MatchScoreCountOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   gaps?: Prisma.SortOrder
+  outputLanguage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -411,6 +431,7 @@ export type MatchScoreMaxOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   gaps?: Prisma.SortOrder
+  outputLanguage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -422,6 +443,7 @@ export type MatchScoreMinOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   strengths?: Prisma.SortOrder
   gaps?: Prisma.SortOrder
+  outputLanguage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -527,6 +549,7 @@ export type MatchScoreCreateWithoutUserInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
   job: Prisma.JobCreateNestedOneWithoutMatchScoresInput
 }
@@ -538,6 +561,7 @@ export type MatchScoreUncheckedCreateWithoutUserInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
 }
 
@@ -578,6 +602,7 @@ export type MatchScoreScalarWhereInput = {
   summary?: Prisma.StringFilter<"MatchScore"> | string
   strengths?: Prisma.StringFilter<"MatchScore"> | string
   gaps?: Prisma.StringFilter<"MatchScore"> | string
+  outputLanguage?: Prisma.StringNullableFilter<"MatchScore"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MatchScore"> | Date | string
 }
 
@@ -587,6 +612,7 @@ export type MatchScoreCreateWithoutJobInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMatchScoresInput
 }
@@ -598,6 +624,7 @@ export type MatchScoreUncheckedCreateWithoutJobInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
 }
 
@@ -634,6 +661,7 @@ export type MatchScoreCreateManyUserInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
 }
 
@@ -643,6 +671,7 @@ export type MatchScoreUpdateWithoutUserInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.JobUpdateOneRequiredWithoutMatchScoresNestedInput
 }
@@ -654,6 +683,7 @@ export type MatchScoreUncheckedUpdateWithoutUserInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -664,6 +694,7 @@ export type MatchScoreUncheckedUpdateManyWithoutUserInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -674,6 +705,7 @@ export type MatchScoreCreateManyJobInput = {
   summary: string
   strengths: string
   gaps: string
+  outputLanguage?: string | null
   createdAt?: Date | string
 }
 
@@ -683,6 +715,7 @@ export type MatchScoreUpdateWithoutJobInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMatchScoresNestedInput
 }
@@ -694,6 +727,7 @@ export type MatchScoreUncheckedUpdateWithoutJobInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -704,6 +738,7 @@ export type MatchScoreUncheckedUpdateManyWithoutJobInput = {
   summary?: Prisma.StringFieldUpdateOperationsInput | string
   strengths?: Prisma.StringFieldUpdateOperationsInput | string
   gaps?: Prisma.StringFieldUpdateOperationsInput | string
+  outputLanguage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -717,6 +752,7 @@ export type MatchScoreSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   summary?: boolean
   strengths?: boolean
   gaps?: boolean
+  outputLanguage?: boolean
   createdAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -730,6 +766,7 @@ export type MatchScoreSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   summary?: boolean
   strengths?: boolean
   gaps?: boolean
+  outputLanguage?: boolean
   createdAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -743,6 +780,7 @@ export type MatchScoreSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   summary?: boolean
   strengths?: boolean
   gaps?: boolean
+  outputLanguage?: boolean
   createdAt?: boolean
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -756,10 +794,11 @@ export type MatchScoreSelectScalar = {
   summary?: boolean
   strengths?: boolean
   gaps?: boolean
+  outputLanguage?: boolean
   createdAt?: boolean
 }
 
-export type MatchScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "userId" | "score" | "summary" | "strengths" | "gaps" | "createdAt", ExtArgs["result"]["matchScore"]>
+export type MatchScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "jobId" | "userId" | "score" | "summary" | "strengths" | "gaps" | "outputLanguage" | "createdAt", ExtArgs["result"]["matchScore"]>
 export type MatchScoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -787,6 +826,10 @@ export type $MatchScorePayload<ExtArgs extends runtime.Types.Extensions.Internal
     summary: string
     strengths: string
     gaps: string
+    /**
+     * ISO language code for cached AI output (e.g. en, hu). Null = legacy English.
+     */
+    outputLanguage: string | null
     createdAt: Date
   }, ExtArgs["result"]["matchScore"]>
   composites: {}
@@ -1220,6 +1263,7 @@ export interface MatchScoreFieldRefs {
   readonly summary: Prisma.FieldRef<"MatchScore", 'String'>
   readonly strengths: Prisma.FieldRef<"MatchScore", 'String'>
   readonly gaps: Prisma.FieldRef<"MatchScore", 'String'>
+  readonly outputLanguage: Prisma.FieldRef<"MatchScore", 'String'>
   readonly createdAt: Prisma.FieldRef<"MatchScore", 'DateTime'>
 }
     

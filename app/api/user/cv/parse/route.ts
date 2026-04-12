@@ -11,7 +11,7 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 kérés / perc / user
+  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 request / min / user
 });
 
 const cvProfileSchema = z.object({
@@ -140,7 +140,7 @@ Rules:
 - no markdown
 - no extra text before or after the JSON
 - do not invent facts not present in the CV
-- language: hungarian
+- language: English
 
 CV TEXT:
 ${cv.rawText}

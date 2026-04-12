@@ -4,6 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import JobDetailActions from "@/components/job-detail-actions";
 import JobAiInsights from "@/components/job-ai-insights";
 import JobEventsPanel from "@/components/job-events-panel";
+import { parseStoredCoverLetter } from "@/lib/ai-output-language";
 import Link from "next/link";
 import type { EventType as UiEventType } from "@/components/event-form-modal";
 
@@ -16,7 +17,7 @@ function formatSalaryRange({
   salaryMax?: number | null;
   currency?: string | null;
 }) {
-  const fmt = (value: number) => value.toLocaleString("hu-HU");
+  const fmt = (value: number) => value.toLocaleString("en-US");
   const cur = currency?.trim() ? ` ${currency.trim()}` : "";
 
   if (typeof salaryMin === "number" && typeof salaryMax === "number") {
@@ -124,7 +125,9 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   if (job.aiSummary) {
     try {
-      initialSummary = JSON.parse(job.aiSummary);
+      const raw = JSON.parse(job.aiSummary) as Record<string, unknown>;
+      const { outputLanguage: _o, ...rest } = raw;
+      initialSummary = rest as unknown as typeof initialSummary;
     } catch (error) {
       console.error("AI_SUMMARY_PARSE_ERROR", error);
     }
@@ -159,11 +162,16 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   if (job.aiInterviewPrep) {
     try {
-      initialPrep = JSON.parse(job.aiInterviewPrep);
+      const raw = JSON.parse(job.aiInterviewPrep) as Record<string, unknown>;
+      const { outputLanguage: _ol, ...rest } = raw;
+      initialPrep = rest as unknown as typeof initialPrep;
     } catch (error) {
       console.error("INTERVIEW_PREP_PARSE_ERROR", error);
     }
   }
+
+  const coverText = parseStoredCoverLetter(job.aiCoverLetter);
+  const initialCoverLetter = coverText.trim() ? coverText : null;
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -173,7 +181,7 @@ export default async function JobDetailPage({ params }: PageProps) {
           className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
         >
           <span>←</span>
-          <span>Vissza az állásokhoz</span>
+          <span>Back to jobs</span>
         </Link>
 
         <section className="mt-6 overflow-hidden rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
@@ -226,11 +234,11 @@ export default async function JobDetailPage({ params }: PageProps) {
                   </span>
 
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-                    Létrehozva: {new Date(job.createdAt).toLocaleDateString("hu-HU")}
+                    Created: {new Date(job.createdAt).toLocaleDateString("en-US")}
                   </span>
 
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-                    Frissítve: {new Date(job.updatedAt).toLocaleDateString("hu-HU")}
+                    Updated: {new Date(job.updatedAt).toLocaleDateString("en-US")}
                   </span>
                 </div>
               </div>
@@ -246,20 +254,20 @@ export default async function JobDetailPage({ params }: PageProps) {
               <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
                 <div className="mb-5 flex items-center justify-between">
                   <div>
-                    <h2 className="text-xl font-semibold">Állás részletei</h2>
+                    <h2 className="text-xl font-semibold">Job details</h2>
                     <p className="mt-1 text-sm text-slate-400">
-                      A kiválasztott pozícióhoz tartozó alapinformációk.
+                      Core information for this role.
                     </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <InfoCard title="Pozíció" value={job.title} />
-                  <InfoCard title="Cég" value={job.company} />
-                  <InfoCard title="Helyszín" value={job.location || "—"} />
-                  <InfoCard title="Forrás" value={job.source || "—"} />
+                  <InfoCard title="Title" value={job.title} />
+                  <InfoCard title="Company" value={job.company} />
+                  <InfoCard title="Location" value={job.location || "—"} />
+                  <InfoCard title="Source" value={job.source || "—"} />
                   <InfoCard
-                    title="Bérsáv"
+                    title="Salary range"
                     value={formatSalaryRange({
                       salaryMin: job.salaryMin,
                       salaryMax: job.salaryMax,
@@ -285,24 +293,24 @@ export default async function JobDetailPage({ params }: PageProps) {
                     </div>
                   ) : (
                     <p className="mt-4 text-sm text-slate-400">
-                      Nincs megadva tag.
+                      No tags added.
                     </p>
                   )}
                 </div>
 
                 <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/40 p-5">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                    Leírás
+                    Description
                   </p>
                   <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-slate-300">
                     {job.description ||
-                      "Még nincs leírás megadva ehhez az álláshoz."}
+                      "No description has been added for this job yet."}
                   </p>
                 </div>
 
                 <div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/40 p-5">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                    Állás link
+                    Job link
                   </p>
 
                   {job.jobUrl ? (
@@ -316,7 +324,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                     </a>
                   ) : (
                     <p className="mt-4 text-sm text-slate-400">
-                      Nincs megadva link ehhez az álláshoz.
+                      No link has been added for this job.
                     </p>
                   )}
                 </div>
@@ -326,21 +334,21 @@ export default async function JobDetailPage({ params }: PageProps) {
                 jobId={job.id}
                 initialMatch={initialMatch}
                 initialSummary={initialSummary}
-                initialCoverLetter={job.aiCoverLetter ?? null}
+                initialCoverLetter={initialCoverLetter}
                 initialPrep={initialPrep}
               />
 
               <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6">
                 <div className="mb-5">
-                  <h2 className="text-xl font-semibold">Státusz előzmények</h2>
+                  <h2 className="text-xl font-semibold">Status history</h2>
                   <p className="mt-1 text-sm text-slate-400">
-                    Az állás státuszváltozásainak idővonala.
+                    Timeline of status changes for this job.
                   </p>
                 </div>
 
                 <div className="space-y-3">
                   {job.statusHistory.length === 0 ? (
-                    <EmptyState text="Még nincs státusz előzmény." />
+                    <EmptyState text="No status history yet." />
                   ) : (
                     job.statusHistory.map((item) => (
                       <div
@@ -371,7 +379,7 @@ export default async function JobDetailPage({ params }: PageProps) {
                           </div>
 
                           <div className="text-sm text-slate-500">
-                            {new Date(item.changedAt).toLocaleString("hu-HU")}
+                            {new Date(item.changedAt).toLocaleString("en-US")}
                           </div>
                         </div>
                       </div>
@@ -383,31 +391,31 @@ export default async function JobDetailPage({ params }: PageProps) {
 
             <aside className="space-y-6">
               <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6 xl:sticky xl:top-24">
-                <h2 className="text-xl font-semibold">Összegzés</h2>
+                <h2 className="text-xl font-semibold">Summary</h2>
                 <p className="mt-1 text-sm text-slate-400">
-                  Gyors áttekintés a pozíció jelenlegi állapotáról.
+                  Quick snapshot of this role’s current state.
                 </p>
 
                 <div className="mt-5 space-y-4">
                   <SidebarInfoCard
-                    label="Aktuális státusz"
+                    label="Current status"
                     value={job.status}
                     badgeClass={getStatusClasses(job.status)}
                     isBadge
                   />
 
                   <SidebarInfoCard
-                    label="Létrehozva"
-                    value={new Date(job.createdAt).toLocaleString("hu-HU")}
+                    label="Created"
+                    value={new Date(job.createdAt).toLocaleString("en-US")}
                   />
 
                   <SidebarInfoCard
-                    label="Utoljára frissítve"
-                    value={new Date(job.updatedAt).toLocaleString("hu-HU")}
+                    label="Last updated"
+                    value={new Date(job.updatedAt).toLocaleString("en-US")}
                   />
 
                   <SidebarInfoCard
-                    label="Bérsáv"
+                    label="Salary range"
                     value={formatSalaryRange({
                       salaryMin: job.salaryMin,
                       salaryMax: job.salaryMax,
@@ -416,12 +424,12 @@ export default async function JobDetailPage({ params }: PageProps) {
                   />
 
                   <SidebarInfoCard
-                    label="Kapcsolódó eventek"
+                    label="Related events"
                     value={String(job.events.length)}
                   />
 
                   <SidebarInfoCard
-                    label="Státusz előzmények"
+                    label="Status history entries"
                     value={String(job.statusHistory.length)}
                   />
                 </div>

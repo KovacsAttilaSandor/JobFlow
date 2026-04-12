@@ -39,7 +39,7 @@ function getEventClasses(type: string) {
 }
 
 function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("hu-HU", {
+  return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -47,7 +47,7 @@ function formatDate(date: Date) {
 }
 
 function formatDateTime(date: Date) {
-  return new Intl.DateTimeFormat("hu-HU", {
+  return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -86,13 +86,13 @@ export default async function DashboardPage() {
                 </div>
 
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-                  Üdv újra, {displayName}
+                  Welcome back, {displayName}
                 </h1>
 
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-                  Áttekintés az álláskeresésedről: mennyi aktív jelentkezésed
-                  van, milyen eventek közelednek, és hogyan változtak a
-                  státuszaid az elmúlt időszakban.
+                  A snapshot of your search: how many active applications you
+                  have, which events are coming up, and how your statuses have
+                  shifted recently.
                 </p>
               </div>
 
@@ -101,21 +101,21 @@ export default async function DashboardPage() {
                   href="/jobs"
                   className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
                 >
-                  Állások
+                  Jobs
                 </Link>
 
                 <Link
                   href="/jobs/board"
                   className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2"
                 >
-                  Board nézet
+                  Board view
                 </Link>
 
                 <Link
                   href="/jobs/new"
                   className="rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
                 >
-                  Új állás
+                  New job
                 </Link>
               </div>
             </div>
@@ -128,12 +128,12 @@ export default async function DashboardPage() {
                 href="/jobs"
                 className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
-                <p className="text-sm text-slate-400">Összes jelentkezés</p>
+                <p className="text-sm text-slate-400">Total applications</p>
                 <p className="mt-3 text-3xl font-semibold">
                   {data.stats.totalJobs}
                 </p>
                 <p className="mt-2 text-sm text-slate-500">
-                  Minden mentett állás
+                  All saved jobs
                 </p>
               </Link>
 
@@ -141,7 +141,7 @@ export default async function DashboardPage() {
                 href="/jobs"
                 className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
-                <p className="text-sm text-slate-400">Aktív jelentkezések</p>
+                <p className="text-sm text-slate-400">Active applications</p>
                 <p className="mt-3 text-3xl font-semibold">
                   {data.stats.activeJobs}
                 </p>
@@ -154,12 +154,12 @@ export default async function DashboardPage() {
                 href="/jobs"
                 className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
-                <p className="text-sm text-slate-400">Interjúk</p>
+                <p className="text-sm text-slate-400">Interviews</p>
                 <p className="mt-3 text-3xl font-semibold">
                   {data.stats.interviews}
                 </p>
                 <p className="mt-2 text-sm text-slate-500">
-                  Interviewing státuszban
+                  In Interviewing status
                 </p>
               </Link>
 
@@ -167,12 +167,12 @@ export default async function DashboardPage() {
                 href="/jobs"
                 className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-xl transition hover:border-white/20 hover:bg-white/10"
               >
-                <p className="text-sm text-slate-400">Ajánlatok</p>
+                <p className="text-sm text-slate-400">Offers</p>
                 <p className="mt-3 text-3xl font-semibold">
                   {data.stats.offers}
                 </p>
                 <p className="mt-2 text-sm text-slate-500">
-                  Offer státuszban
+                  In Offer status
                 </p>
               </Link>
             </section>
@@ -186,10 +186,10 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
               <div>
                 <h2 className="text-base font-semibold tracking-tight">
-                  Legutóbbi jelentkezések
+                  Recent applications
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Az utóbbi időben hozzáadott állások.
+                  Jobs you added recently.
                 </p>
               </div>
 
@@ -197,7 +197,7 @@ export default async function DashboardPage() {
                 href="/jobs"
                 className="text-xs font-medium text-slate-300 hover:text-white"
               >
-                Összes megnyitása
+                View all
               </Link>
             </div>
 
@@ -205,12 +205,12 @@ export default async function DashboardPage() {
               <div className="space-y-3">
                 {data.recentJobs.length === 0 ? (
                   <div className="rounded-2xl border border-dashed border-white/10 bg-slate-950/60 p-4 text-sm text-slate-400">
-                    Még nincs egyetlen állásod sem.{" "}
+                    You don&apos;t have any jobs yet.{" "}
                     <Link
                       href="/jobs/new"
                       className="font-medium text-blue-300 underline-offset-4 hover:underline"
                     >
-                      Adj hozzá egy új állást
+                      Add a new job
                     </Link>
                     .
                   </div>
@@ -263,10 +263,10 @@ export default async function DashboardPage() {
               <div className="flex items-start justify-between gap-4 border-b border-white/10 px-6 py-4">
                 <div>
                   <h2 className="text-base font-semibold tracking-tight">
-                    Közelgő eventek
+                    Upcoming events
                   </h2>
                 <p className="mt-1 text-xs text-slate-400">
-                  Interjúk, follow-upok és határidők a következő napokra.
+                  Interviews, follow-ups, and deadlines in the coming days.
                 </p>
                 </div>
 
@@ -274,7 +274,7 @@ export default async function DashboardPage() {
                   href="/events"
                   className="text-xs font-medium text-slate-300 hover:text-white"
                 >
-                  Naptár megnyitása
+                  Open calendar
                 </a>
               </div>
 
@@ -282,7 +282,7 @@ export default async function DashboardPage() {
                 <div className="space-y-3">
                   {data.upcomingEvents.length === 0 ? (
                     <div className="rounded-2xl border border-dashed border-white/10 bg-slate-950/60 p-4 text-sm text-slate-400">
-                      Nincs közelgő event.
+                      No upcoming events.
                     </div>
                   ) : (
                     data.upcomingEvents.map((event) => (
@@ -324,13 +324,13 @@ export default async function DashboardPage() {
         {/* ACTIVITY */}
         <section className="mt-8 overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/70 p-6 shadow-2xl backdrop-blur-2xl">
           <h2 className="text-base font-semibold tracking-tight">
-            Legutóbbi aktivitás
+            Recent activity
           </h2>
 
           <div className="mt-4 space-y-3">
             {data.activity.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-white/10 bg-slate-950/60 p-4 text-sm text-slate-400">
-                Még nincs aktivitás.
+                No activity yet.
               </div>
             ) : (
               data.activity.map((item) => (
@@ -341,7 +341,7 @@ export default async function DashboardPage() {
                   <span className="font-medium text-white">
                     {item.job.company}
                   </span>{" "}
-                  – státusz módosítva:{" "}
+                  – status updated to{" "}
                   <span className="text-slate-100">{item.toStatus}</span>{" "}
                   <span className="text-slate-500">
                     ({formatDateTime(item.changedAt)})

@@ -56,12 +56,12 @@ export default function RegisterPage() {
     setMessage("");
 
     if (password.length < 6) {
-      setError("A jelszónak legalább 6 karakter hosszúnak kell lennie.");
+      setError("Password must be at least 6 characters.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("A két jelszó nem egyezik.");
+      setError("Passwords do not match.");
       return;
     }
 
@@ -79,18 +79,18 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Hiba történt.");
+        setError(data.error || "Something went wrong.");
         return;
       }
 
-      setMessage("Sikeres regisztráció! Most már bejelentkezhetsz.");
+      setMessage("Registration successful! You can sign in now.");
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
     } catch (err) {
       console.error(err);
-      setError("Szerverhiba történt.");
+      setError("A server error occurred.");
     } finally {
       setLoading(false);
     }
@@ -108,16 +108,15 @@ export default function RegisterPage() {
             </div>
 
             <h1 className="mt-6 max-w-xl text-5xl font-semibold leading-tight tracking-tight">
-              Hozz létre egy fiókot, és kezdd el rendszerezni az
+              Create an account and start organizing your
               <span className="block text-blue-400">
-                állásjelentkezéseidet
+                job applications
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-8 text-muted-2">
-              Kövesd az állásokat, interjúkat és follow-upokat egy modern
-              dashboardban, és használd az AI funkciókat a gyorsabb
-              álláskereséshez.
+              Track roles, interviews, and follow-ups in a modern dashboard,
+              and use AI tools to move your search faster.
             </p>
 
             <div className="mt-10 grid max-w-xl gap-4 sm:grid-cols-2">
@@ -126,14 +125,14 @@ export default function RegisterPage() {
                   Job tracking
                 </div>
                 <div className="mt-2 text-sm text-muted-2">
-                  Státuszok, board nézet, események és dashboard.
+                  Statuses, board view, events, and dashboard.
                 </div>
               </div>
 
               <div className="rounded-2xl border border-border bg-surface p-5 backdrop-blur">
                 <div className="text-sm font-medium text-foreground">AI tools</div>
                 <div className="mt-2 text-sm text-muted-2">
-                  Match score, AI summary és cover letter generálás.
+                  Match score, AI summary, and cover letter generation.
                 </div>
               </div>
             </div>
@@ -146,33 +145,33 @@ export default function RegisterPage() {
               </div>
 
               <h1 className="mt-4 text-4xl font-semibold tracking-tight">
-                Regisztráció
+                Register
               </h1>
 
               <p className="mt-3 text-sm leading-6 text-muted-2">
-                Hozz létre egy új fiókot, és kezdj el mindent egy helyen kezelni.
+                Create a new account and manage everything in one place.
               </p>
             </div>
 
             <div className="rounded-[28px] border border-border bg-surface p-8 shadow-2xl backdrop-blur-xl">
               <div className="mb-6 hidden lg:block">
                 <h2 className="text-3xl font-semibold tracking-tight">
-                  Regisztráció
+                  Register
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-muted-2">
-                  Add meg az adataidat, és kész is a JobFlow fiókod.
+                  Enter your details to create your JobFlow account.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-foreground">
-                    Név
+                    Name
                   </label>
                   <input
                     type="text"
                     className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
-                    placeholder="Teljes neved"
+                    placeholder="Your full name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -185,7 +184,7 @@ export default function RegisterPage() {
                   <input
                     type="email"
                     className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
-                    placeholder="pelda@email.com"
+                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -194,14 +193,14 @@ export default function RegisterPage() {
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-foreground">
-                    Jelszó
+                    Password
                   </label>
 
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 pr-12 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
-                      placeholder="Legalább 6 karakter"
+                      placeholder="At least 6 characters"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -211,7 +210,7 @@ export default function RegisterPage() {
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
                       className="absolute inset-y-0 right-0 flex items-center px-4 text-muted transition hover:text-foreground"
-                      aria-label="Jelszó megjelenítése"
+                      aria-label="Show password"
                     >
                       <EyeIcon open={showPassword} />
                     </button>
@@ -220,14 +219,14 @@ export default function RegisterPage() {
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-foreground">
-                    Jelszó megerősítése
+                    Confirm password
                   </label>
 
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       className="w-full rounded-2xl border border-border bg-surface-2 px-4 py-3 pr-12 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
-                      placeholder="Írd be újra a jelszót"
+                      placeholder="Re-enter your password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
@@ -239,7 +238,7 @@ export default function RegisterPage() {
                         setShowConfirmPassword((prev) => !prev)
                       }
                       className="absolute inset-y-0 right-0 flex items-center px-4 text-muted transition hover:text-foreground"
-                      aria-label="Jelszó megjelenítése"
+                      aria-label="Show password"
                     >
                       <EyeIcon open={showConfirmPassword} />
                     </button>
@@ -266,17 +265,17 @@ export default function RegisterPage() {
                   {loading && (
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/70 border-t-transparent" />
                   )}
-                  {loading ? "Regisztráció..." : "Fiók létrehozása"}
+                  {loading ? "Registering..." : "Create account"}
                 </button>
               </form>
 
               <div className="mt-6 text-center text-sm text-muted-2">
-                Már van fiókod?{" "}
+                Already have an account?{" "}
                 <Link
                   href="/login"
                   className="font-medium text-foreground underline underline-offset-4 transition hover:opacity-80"
                 >
-                  Bejelentkezés
+                  Sign in
                 </Link>
               </div>
             </div>

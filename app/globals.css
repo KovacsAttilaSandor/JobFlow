@@ -3,19 +3,19 @@
 :root {
   color-scheme: light;
 
-  --background: #faf7f7;
+  --background: #f1f4f9;
   --foreground: #0f172a;
 
-  --surface: rgba(15, 23, 42, 0.04);
-  --surface-2: rgba(45, 59, 94, 0.06);
-  --surface-3: rgba(0, 0, 0, 0.08);
-  --surface-4: rgba(220, 222, 230, 0.06);
+  --surface: rgba(15, 23, 42, 0.055);
+  --surface-2: rgba(15, 23, 42, 0.09);
+  --surface-3: rgba(0, 0, 0, 0.1);
+  --surface-4: rgba(220, 222, 230, 0.08);
 
-  --border: rgba(6, 27, 82, 0.12);
-  --muted: rgba(15, 23, 42, 0.62);
-  --muted-2: rgba(15, 23, 42, 0.48);
+  --border: rgba(15, 23, 42, 0.14);
+  --muted: rgba(15, 23, 42, 0.74);
+  --muted-2: rgba(15, 23, 42, 0.56);
 
-  --primary: #2563eb;
+  --primary: #1d4ed8;
   --primary-foreground: #ffffff;
 }
 
@@ -177,6 +177,54 @@
     background-color: color-mix(in srgb, var(--surface-2) 70%, #e5e7eb 30%);
     border-color: color-mix(in srgb, #e5e7eb 55%, transparent);
     color: color-mix(in srgb, #4b5563 70%, var(--foreground) 30%);
+  }
+
+  /*
+   * Light theme: default Tailwind *-300 colors are meant for dark UIs and look
+   * washed out on light surfaces. Use stronger hues while .dark keeps originals.
+   */
+  html:not(.dark) .text-yellow-300 {
+    color: #a16207;
+  }
+
+  html:not(.dark) .text-blue-300 {
+    color: #1d4ed8;
+  }
+
+  html:not(.dark) .text-purple-300 {
+    color: #6d28d9;
+  }
+
+  html:not(.dark) .text-green-300 {
+    color: #15803d;
+  }
+
+  html:not(.dark) .text-red-300 {
+    color: #b91c1c;
+  }
+
+  html:not(.dark) .text-emerald-300 {
+    color: #047857;
+  }
+
+  html:not(.dark) .text-orange-300 {
+    color: #c2410c;
+  }
+
+  html:not(.dark) .text-slate-300 {
+    color: #475569;
+  }
+
+  html:not(.dark) .hover\:text-blue-200:hover {
+    color: #1e40af;
+  }
+
+  html:not(.dark) .hover\:text-blue-200\/80:hover {
+    color: rgb(30 64 175 / 0.9);
+  }
+
+  html:not(.dark) .group:hover .group-hover\:text-blue-300 {
+    color: #1d4ed8;
   }
 }
 

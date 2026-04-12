@@ -73,7 +73,7 @@ export default function LoginPage() {
 
     if (result?.error) {
       
-      setError("Hibás email vagy jelszó.");
+      setError("Invalid email or password.");
       return;
     }
 
@@ -93,12 +93,12 @@ export default function LoginPage() {
           </div>
 
           <h1 className="mt-4 text-4xl font-semibold tracking-tight">
-            Üdv újra
+            Welcome back
           </h1>
 
           <p className="mt-3 text-sm leading-6 text-muted-2">
-            Jelentkezz be, és folytasd az állásaid, interjúid és jelentkezéseid
-            kezelését egy helyen.
+            Sign in to keep managing your jobs, interviews, and applications
+            in one place.
           </p>
         </div>
 
@@ -111,7 +111,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 className="w-full rounded-xl border border-border bg-surface-2 px-4 py-3 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
-                placeholder="pelda@email.com"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -120,14 +120,14 @@ export default function LoginPage() {
 
             <div>
               <label className="mb-2 block text-sm font-medium text-foreground">
-                Jelszó
+                Password
               </label>
 
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   className="w-full rounded-xl border border-border bg-surface-2 px-4 py-3 pr-12 text-foreground placeholder:text-muted-2 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
-                  placeholder="Írd be a jelszavad"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -137,7 +137,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   className="absolute inset-y-0 right-0 flex items-center px-4 text-muted transition hover:text-foreground"
-                  aria-label="Jelszó megjelenítése"
+                  aria-label="Show password"
                 >
                   <EyeIcon open={showPassword} />
                 </button>
@@ -152,10 +152,10 @@ export default function LoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="accent-blue-500"
                 />
-                Emlékezz rám
+                Remember me
               </label>
 
-              <span className="text-muted-2">Biztonságos bejelentkezés</span>
+              <span className="text-muted-2">Secure sign-in</span>
             </div>
 
             {error && (
@@ -172,17 +172,17 @@ export default function LoginPage() {
               {loading && (
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/70 border-t-transparent" />
               )}
-              {loading ? "Bejelentkezés..." : "Bejelentkezés"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-muted-2">
-            Nincs még fiókod?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/register"
               className="font-medium text-foreground underline underline-offset-4 transition hover:opacity-80"
             >
-              Regisztráció
+              Register
             </Link>
           </div>
         </div>

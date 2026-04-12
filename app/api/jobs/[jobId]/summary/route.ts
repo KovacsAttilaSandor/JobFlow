@@ -1,6 +1,11 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { gemini } from "@/lib/gemini";
+import {
+  aiOutputLanguagePromptRule,
+  getAiOutputLanguageFromRequest,
+} from "@/lib/ai-output-language";
+import { isAiRegenerateRequest } from "@/lib/is-ai-regenerate-request";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -11,14 +16,18 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 kérés / perc / user
+  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 request / min / user
 });
 
-const jobSummarySchema = z.object({
+const jobSummaryFromAiSchema = z.object({
   summary: z.string().min(10).max(2000),
   responsibilities: z.array(z.string()).min(3).max(6),
   requirements: z.array(z.string()).min(3).max(6),
   techStack: z.array(z.string()).min(3).max(8),
+});
+
+const jobSummaryStoredSchema = jobSummaryFromAiSchema.extend({
+  outputLanguage: z.string().optional(),
 });
 
 function extractJson(text: string) {
@@ -96,30 +105,27 @@ export async function POST(
       );
     }
 
-    if (job.aiSummary) {
+    const regenerate = isAiRegenerateRequest(req);
+    const outputLang = getAiOutputLanguageFromRequest(req);
+
+    if (!regenerate && job.aiSummary) {
       try {
         const cached = JSON.parse(job.aiSummary);
-        const validatedCached = jobSummarySchema.safeParse(cached);
+        const validatedCached = jobSummaryStoredSchema.safeParse(cached);
 
         if (validatedCached.success) {
-          return NextResponse.json(validatedCached.data);
+          const cachedLang = validatedCached.data.outputLanguage ?? "en";
+          if (cachedLang === outputLang) {
+            const { outputLanguage: _, ...rest } = validatedCached.data;
+            return NextResponse.json(rest);
+          }
         }
       } catch (error) {
         console.error("JOB_SUMMARY_CACHE_PARSE_ERROR:", error);
       }
     }
 
-    const cooldown = 30 * 1000;
-
-    if (
-      job.aiSummaryUpdatedAt &&
-      Date.now() - job.aiSummaryUpdatedAt.getTime() < cooldown
-    ) {
-      return NextResponse.json(
-        { error: "Please wait before regenerating." },
-        { status: 429 }
-      );
-    }
+    const langRule = aiOutputLanguagePromptRule(outputLang);
 
     const prompt = `
 Analyze the following job description.
@@ -139,7 +145,7 @@ Rules:
 - techStack: 3 to 8 short technology names
 - no markdown
 - no extra text before or after the JSON
-- language: hungarian
+- ${langRule}
 
 JOB DESCRIPTION:
 ${job.description}
@@ -171,7 +177,7 @@ ${job.description}
       );
     }
 
-    const parsed = jobSummarySchema.safeParse(json);
+    const parsed = jobSummaryFromAiSchema.safeParse(json);
 
     if (!parsed.success) {
       console.error("GEMINI_JOB_SUMMARY_SCHEMA_ERROR:", parsed.error.issues, json);
@@ -181,17 +187,20 @@ ${job.description}
       );
     }
 
+    const stored = { ...parsed.data, outputLanguage: outputLang };
+
     await prisma.job.update({
       where: {
         id: job.id,
       },
       data: {
-        aiSummary: JSON.stringify(parsed.data),
+        aiSummary: JSON.stringify(stored),
         aiSummaryUpdatedAt: new Date(),
       },
     });
 
-    return NextResponse.json(parsed.data);
+    const { outputLanguage: _, ...clientPayload } = stored;
+    return NextResponse.json(clientPayload);
   } catch (error) {
     console.error("GEMINI_JOB_SUMMARY_ERROR:", error);
 

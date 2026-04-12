@@ -1,6 +1,11 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { gemini } from "@/lib/gemini";
+import {
+  aiOutputLanguagePromptRule,
+  getAiOutputLanguageFromRequest,
+} from "@/lib/ai-output-language";
+import { isAiRegenerateRequest } from "@/lib/is-ai-regenerate-request";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -11,14 +16,18 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 kérés / perc / user
+  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 request / min / user
 });
 
-const responseSchema = z.object({
+const responseFromAiSchema = z.object({
   questions: z.array(z.string()).min(5).max(20),
   talkingPoints: z.array(z.string()).min(5).max(20),
   checklist: z.array(z.string()).min(5).max(20),
   pitch30s: z.string().min(40).max(800),
+});
+
+const responseStoredSchema = responseFromAiSchema.extend({
+  outputLanguage: z.string().optional(),
 });
 
 type ParsedCvProfile = {
@@ -120,31 +129,24 @@ export async function POST(
       );
     }
 
-    // DUPLIKÁCIÓ / CACHE VISSZAADÁS
-    if (job.aiInterviewPrep) {
+    const regenerate = isAiRegenerateRequest(req);
+    const outputLang = getAiOutputLanguageFromRequest(req);
+
+    if (!regenerate && job.aiInterviewPrep) {
       try {
         const cached = JSON.parse(job.aiInterviewPrep);
-        const cachedParsed = responseSchema.safeParse(cached);
+        const cachedParsed = responseStoredSchema.safeParse(cached);
 
         if (cachedParsed.success) {
-          return NextResponse.json(cachedParsed.data);
+          const cachedLang = cachedParsed.data.outputLanguage ?? "en";
+          if (cachedLang === outputLang) {
+            const { outputLanguage: _, ...rest } = cachedParsed.data;
+            return NextResponse.json(rest);
+          }
         }
       } catch (error) {
         console.error("INTERVIEW_PREP_CACHE_PARSE_ERROR:", error);
       }
-    }
-
-    // COOLDOWN (30 mp)
-    const cooldown = 30 * 1000;
-
-    if (
-      job.aiInterviewPrepUpdatedAt &&
-      Date.now() - job.aiInterviewPrepUpdatedAt.getTime() < cooldown
-    ) {
-      return NextResponse.json(
-        { error: "Please wait before regenerating." },
-        { status: 429 }
-      );
     }
 
     let parsedCv: ParsedCvProfile | null = null;
@@ -185,6 +187,8 @@ ${parsedCv.highlights?.length ? `- ${parsedCv.highlights.join("\n- ")}` : "N/A"}
 `
       : "STRUCTURED CV PROFILE: Not available.";
 
+    const langRule = aiOutputLanguagePromptRule(outputLang);
+
     const prompt = `
 You are preparing a candidate for an interview based on their CV and a job description.
 
@@ -204,7 +208,7 @@ Rules:
 - no markdown
 - no extra text before or after the JSON
 - do not invent experience not present in the CV
-- language: Hungarian
+- ${langRule}
 
 JOB TITLE:
 ${job.title || "N/A"}
@@ -247,7 +251,7 @@ ${cv.rawText}
       );
     }
 
-    const parsed = responseSchema.safeParse(json);
+    const parsed = responseFromAiSchema.safeParse(json);
 
     if (!parsed.success) {
       console.error("INTERVIEW_PREP_SCHEMA_ERROR:", parsed.error.issues, json);
@@ -257,15 +261,18 @@ ${cv.rawText}
       );
     }
 
+    const stored = { ...parsed.data, outputLanguage: outputLang };
+
     await prisma.job.update({
       where: { id: job.id },
       data: {
-        aiInterviewPrep: JSON.stringify(parsed.data),
+        aiInterviewPrep: JSON.stringify(stored),
         aiInterviewPrepUpdatedAt: new Date(),
       },
     });
 
-    return NextResponse.json(parsed.data);
+    const { outputLanguage: _, ...clientPayload } = stored;
+    return NextResponse.json(clientPayload);
   } catch (error) {
     console.error("INTERVIEW_PREP_ERROR:", error);
 

@@ -162,5 +162,8 @@ model MatchScore {
   strengths String
   gaps      String
 
+  /// ISO language code for cached AI output (e.g. en, hu). Null = legacy English.
+  outputLanguage String?
+
   createdAt DateTime @default(now())
 }

@@ -55,7 +55,7 @@ export default function DashboardNavbar() {
               className={`${base} ${isJobs && !isNewJob && !isBoard ? active : inactive
                 }`}
             >
-              Állások
+              Jobs
             </Link>
 
             <Link
@@ -63,7 +63,7 @@ export default function DashboardNavbar() {
               className={`${base} ${isNewJob ? active : inactive
                 }`}
             >
-              Új állás
+              New job
             </Link>
 
             <Link

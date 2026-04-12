@@ -5,10 +5,10 @@ import { prisma } from "@/lib/prisma";
 
 const registerSchema = z.object({
   name: z.string().min(2).max(50).optional().or(z.literal("")),
-  email: z.string().email("Érvényes email címet adj meg."),
+  email: z.string().email("Enter a valid email address."),
   password: z
     .string()
-    .min(6, "A jelszónak legalább 6 karakter hosszúnak kell lennie."),
+    .min(6, "Password must be at least 6 characters."),
 });
 
 export async function POST(req: Request) {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Érvénytelen adatok." },
+        { error: "Invalid request data." },
         { status: 400 }
       );
     }
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "Ez az email már használatban van." },
+        { error: "This email is already in use." },
         { status: 409 }
       );
     }
@@ -48,14 +48,14 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(
-      { message: "Sikeres regisztráció." },
+      { message: "Registration successful." },
       { status: 201 }
     );
   } catch (error) {
     console.error("REGISTER_ERROR:", error);
 
     return NextResponse.json(
-      { error: "Szerverhiba történt." },
+      { error: "A server error occurred." },
       { status: 500 }
     );
   }

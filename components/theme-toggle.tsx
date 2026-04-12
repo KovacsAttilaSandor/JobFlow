@@ -72,8 +72,8 @@ export default function ThemeToggle({
         "focus:outline-none focus:ring-2 focus:ring-primary/25",
         className,
       ].join(" ")}
-      aria-label="Téma váltása (light/dark)"
-      title="Téma váltása"
+      aria-label="Toggle theme (light/dark)"
+      title="Toggle theme"
     >
       {isDark ? <MoonIcon /> : <SunIcon />}
       <span className="hidden sm:inline">{isDark ? "Dark" : "Light"}</span>

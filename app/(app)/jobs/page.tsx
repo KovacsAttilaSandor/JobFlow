@@ -13,7 +13,7 @@ function formatSalaryRange({
   salaryMax?: number | null;
   currency?: string | null;
 }) {
-  const fmt = (value: number) => value.toLocaleString("hu-HU");
+  const fmt = (value: number) => value.toLocaleString("en-US");
   const cur = currency?.trim() ? ` ${currency.trim()}` : "";
 
   if (typeof salaryMin === "number" && typeof salaryMax === "number") {
@@ -165,6 +165,19 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                 mode: "insensitive" as const,
               },
             },
+            {
+              tags: {
+                some: {
+                  tag: {
+                    userId: user.id,
+                    name: {
+                      contains: q,
+                      mode: "insensitive" as const,
+                    },
+                  },
+                },
+              },
+            },
           ],
         }
       : {}),
@@ -285,18 +298,18 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                 </div>
 
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Állások kezelése
+                  Manage jobs
                 </h1>
 
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-2">
-                  Keress, szűrj, rendezz és navigálj gyorsan a jelentkezéseid
-                  között.
+                  Search, filter, sort, and move quickly through your
+                  applications.
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
                 <div className="rounded-full border border-border bg-surface px-3 py-2 text-sm text-muted">
-                  Találatok: <span className="text-foreground">{totalCount}</span>
+                  Results: <span className="text-foreground">{totalCount}</span>
                 </div>
 
                 <a
@@ -310,7 +323,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                   href="/jobs/new"
                   className="rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
                 >
-                  Új állás
+                  New job
                 </Link>
               </div>
             </div>
@@ -318,7 +331,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
 
           <div className="px-8 py-8">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
-              <StatCard label="Összes" value={statsRows.reduce((acc, item) => acc + item._count._all, 0)} />
+              <StatCard label="All" value={statsRows.reduce((acc, item) => acc + item._count._all, 0)} />
               <StatCard label="Saved" value={statsMap.get("Saved") || 0} />
               <StatCard label="Applied" value={statsMap.get("Applied") || 0} />
               <StatCard label="Interviewing" value={statsMap.get("Interviewing") || 0} />
@@ -340,10 +353,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               {jobs.length === 0 ? (
                 <div className="px-6 py-12 text-center">
                   <p className="text-lg font-medium text-foreground">
-                    Nincs találat
+                    No results
                   </p>
                   <p className="mt-2 text-sm text-muted-2">
-                    Próbálj meg más szűrőket vagy keresési kifejezést használni.
+                    Try different filters or search terms.
                   </p>
                 </div>
               ) : (
@@ -351,15 +364,15 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                   <table className="w-full min-w-[1220px] text-sm">
                     <thead className="border-b border-white/10 bg-white/5 text-slate-400">
                       <tr>
-                        <th className="px-6 py-4 text-left font-medium">Pozíció</th>
-                        <th className="px-6 py-4 text-left font-medium">Cég</th>
-                        <th className="px-6 py-4 text-left font-medium">Helyszín</th>
-                        <th className="px-6 py-4 text-left font-medium">Bérsáv</th>
-                        <th className="px-6 py-4 text-left font-medium">Forrás</th>
+                        <th className="px-6 py-4 text-left font-medium">Title</th>
+                        <th className="px-6 py-4 text-left font-medium">Company</th>
+                        <th className="px-6 py-4 text-left font-medium">Location</th>
+                        <th className="px-6 py-4 text-left font-medium">Salary</th>
+                        <th className="px-6 py-4 text-left font-medium">Source</th>
                         <th className="px-6 py-4 text-left font-medium">Link</th>
-                        <th className="px-6 py-4 text-left font-medium">Státusz</th>
-                        <th className="px-6 py-4 text-left font-medium">Létrehozva</th>
-                        <th className="px-6 py-4 text-left font-medium">Frissítve</th>
+                        <th className="px-6 py-4 text-left font-medium">Status</th>
+                        <th className="px-6 py-4 text-left font-medium">Created</th>
+                        <th className="px-6 py-4 text-left font-medium">Updated</th>
                       </tr>
                     </thead>
 
@@ -428,7 +441,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                                 rel="noreferrer noopener"
                                 className="font-medium text-blue-300 hover:text-blue-200"
                               >
-                                Megnyitás
+                                Open
                               </a>
                             ) : (
                               "—"
@@ -446,11 +459,11 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                           </td>
 
                           <td className="px-6 py-4 text-slate-500">
-                            {new Date(job.createdAt).toLocaleDateString("hu-HU")}
+                            {new Date(job.createdAt).toLocaleDateString("en-US")}
                           </td>
 
                           <td className="px-6 py-4 text-slate-500">
-                            {new Date(job.updatedAt).toLocaleDateString("hu-HU")}
+                            {new Date(job.updatedAt).toLocaleDateString("en-US")}
                           </td>
                         </tr>
                       ))}
@@ -463,7 +476,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             {totalPages > 1 && (
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
                 <p className="text-sm text-slate-400">
-                  Oldal <span className="text-white">{currentPage}</span> /{" "}
+                  Page <span className="text-white">{currentPage}</span> /{" "}
                   <span className="text-white">{totalPages}</span>
                 </p>
 
@@ -473,11 +486,11 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                       href={`/jobs?${buildPageQuery(queryBase, currentPage - 1)}`}
                       className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:bg-white/10"
                     >
-                      Előző
+                      Previous
                     </a>
                   ) : (
                     <span className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-500">
-                      Előző
+                      Previous
                     </span>
                   )}
 
@@ -486,11 +499,11 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                       href={`/jobs?${buildPageQuery(queryBase, currentPage + 1)}`}
                       className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:bg-white/10"
                     >
-                      Következő
+                      Next
                     </a>
                   ) : (
                     <span className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-500">
-                      Következő
+                      Next
                     </span>
                   )}
                 </div>

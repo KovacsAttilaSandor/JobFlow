@@ -43,7 +43,7 @@ export default function SettingsPage() {
       setCv(data);
     } catch (err) {
       console.error(err);
-      setError("Nem sikerült betölteni a CV adatokat.");
+      setError("Failed to load resume data.");
     } finally {
       setLoading(false);
     }
@@ -82,16 +82,16 @@ export default function SettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "CV feltöltése sikertelen.");
+        setError(data.error || "resume upload failed.");
         return;
       }
 
-      setMessage("CV sikeresen feltöltve.");
+      setMessage("resume uploaded successfully.");
       await loadCv();
       e.currentTarget.reset();
     } catch (err) {
       console.error(err);
-      setError("Hiba történt a CV feltöltése közben.");
+      setError("Something went wrong while uploading your resume.");
     } finally {
       setUploading(false);
     }
@@ -110,15 +110,15 @@ export default function SettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "CV elemzése sikertelen.");
+        setError(data.error || "resume parsing failed.");
         return;
       }
 
-      setMessage("AI CV elemzés sikeresen elkészült.");
+      setMessage("AI resume parsing completed.");
       await loadCv();
     } catch (err) {
       console.error(err);
-      setError("Hiba történt a CV AI elemzése közben.");
+      setError("Something went wrong during AI resume parsing.");
     } finally {
       setParsing(false);
     }
@@ -126,7 +126,7 @@ export default function SettingsPage() {
 
   async function deleteCv() {
     const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd a feltöltött CV-t?"
+      "Delete your uploaded resume?"
     );
 
     if (!confirmed) return;
@@ -143,124 +143,135 @@ export default function SettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "CV törlése sikertelen.");
+        setError(data.error || "Failed to delete resume.");
         return;
       }
 
       setCv(null);
-      setMessage("CV sikeresen törölve.");
+      setMessage("resume deleted.");
     } catch (err) {
       console.error(err);
-      setError("Hiba történt a CV törlése közben.");
+      setError("Something went wrong while deleting your resume.");
     } finally {
       setDeleting(false);
     }
   }
 
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <div className="pointer-events-none fixed inset-0 opacity-90">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.10),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.08),transparent_34%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(96,165,250,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(129,140,248,0.10),transparent_38%)]" />
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="pointer-events-none fixed inset-0 opacity-100">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_0%_-20%,rgba(59,130,246,0.12),transparent),radial-gradient(ellipse_100%_60%_at_100%_100%,rgba(168,85,247,0.08),transparent)] dark:bg-[radial-gradient(ellipse_120%_80%_at_0%_-20%,rgba(96,165,250,0.16),transparent),radial-gradient(ellipse_100%_60%_at_100%_100%,rgba(129,140,248,0.12),transparent)]" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-10">
-        <section
-          className="overflow-hidden rounded-[32px] border border-[var(--border)] bg-[var(--card)] shadow-2xl"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
-          <div className="border-b border-[var(--border)] bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.10),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.08),transparent_26%)] px-8 py-8 dark:bg-[radial-gradient(circle_at_top_left,rgba(96,165,250,0.14),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(129,140,248,0.10),transparent_28%)]">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--soft)] px-3 py-1 text-xs text-[var(--muted-foreground)]">
+      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        <section className="overflow-hidden rounded-[32px] border border-border bg-surface shadow-2xl backdrop-blur-xl ring-1 ring-black/[0.04] dark:ring-white/[0.06]">
+          <div className="border-b border-border bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.10),transparent_25%)] px-6 py-8 sm:px-8">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1 text-xs font-medium text-muted backdrop-blur-sm">
+                  <span className="size-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.6)] dark:shadow-[0_0_8px_rgba(96,165,250,0.5)]" />
                   Settings
                 </div>
 
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Profil és AI beállítások
+                  Profile & AI settings
                 </h1>
 
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
-                  Itt kezelheted a feltöltött CV-det, megnézheted az AI által
-                  feldolgozott adatokat, és felkészítheted a profilodat a
-                  pontosabb állásajánlat-elemzéshez.
+                <p className="mt-2 text-sm leading-relaxed text-muted-2 sm:text-[15px]">
+                  Manage your uploaded resume, review AI-extracted data, and tune
+                  your profile for more accurate job analysis.
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:shrink-0">
                 <TopStat
-                  label="CV"
-                  value={cv ? "Feltöltve" : "Nincs"}
+                  label="resume"
+                  value={cv ? "Uploaded" : "None"}
+                  tone={cv ? "ok" : "muted"}
                 />
                 <TopStat
                   label="AI parse"
-                  value={parsedCv ? "Kész" : "Nincs"}
+                  value={parsedCv ? "Ready" : "None"}
+                  tone={parsedCv ? "ok" : "muted"}
                 />
                 <TopStat
                   label="Skills"
                   value={String(parsedCv?.skills?.length ?? 0)}
+                  tone="neutral"
                 />
                 <TopStat
                   label="Tech"
                   value={String(parsedCv?.technologies?.length ?? 0)}
+                  tone="neutral"
                 />
               </div>
             </div>
           </div>
 
-          <div className="px-8 py-8">
+          <div className="px-6 py-8 sm:px-8">
             {error && (
-              <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
-                {error}
+              <div
+                role="alert"
+                className="mb-6 flex items-start gap-3 rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200"
+              >
+                <span className="mt-0.5 text-red-600 dark:text-red-400" aria-hidden>
+                  !
+                </span>
+                <span>{error}</span>
               </div>
             )}
 
             {message && (
-              <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
-                {message}
+              <div
+                role="status"
+                className="mb-6 flex items-start gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-200"
+              >
+                <CheckIcon className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <span>{message}</span>
               </div>
             )}
 
-            <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_340px]">
+            <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
               <div className="space-y-8">
-                <section
-                  className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6"
-                  style={{ boxShadow: "var(--shadow-soft)" }}
+                <SettingsSection
+                  eyebrow="Files"
+                  title="resume management"
+                  description="Upload a PDF resume. We extract the text, then AI builds structured profile data."
+                  badge="PDF only"
                 >
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold">CV kezelése</h2>
-                      <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-                        Töltsd fel PDF formátumban a CV-det. A rendszer kiolvassa
-                        a szöveget, majd az AI strukturált adatokat készít belőle.
-                      </p>
-                    </div>
-
-                    <div className="rounded-full border border-[var(--border)] bg-[var(--soft)] px-3 py-1 text-xs text-[var(--muted-foreground)]">
-                      PDF only
-                    </div>
-                  </div>
-
-                  <form onSubmit={uploadCv} className="mt-6 space-y-4">
-                    <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--soft)] p-4">
+                  <form onSubmit={uploadCv} className="mt-6 space-y-5">
+                    <div className="group relative overflow-hidden rounded-[22px] border border-dashed border-border bg-gradient-to-b from-surface to-surface-2/50 p-6 transition hover:border-primary/30 hover:from-surface hover:to-surface-2">
+                      <div className="pointer-events-none absolute -right-8 -top-8 size-32 rounded-full bg-primary/5 blur-2xl transition group-hover:bg-primary/10" />
+                      <div className="relative flex flex-col items-center gap-3 text-center sm:flex-row sm:text-left">
+                        <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-border bg-background shadow-sm">
+                          <PdfIcon className="size-6 text-muted-2" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-foreground">
+                            Drop a PDF or choose a file
+                          </p>
+                          <p className="mt-1 text-xs text-muted-2">
+                            Text-based PDFs parse best. Max size depends on your
+                            server limits.
+                          </p>
+                        </div>
+                      </div>
                       <input
                         type="file"
                         name="file"
                         accept="application/pdf"
                         required
-                        className="block w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm text-[var(--foreground)] file:mr-4 file:rounded-xl file:border-0 file:bg-[var(--primary)] file:px-4 file:py-2 file:text-sm file:font-medium file:text-[var(--primary-foreground)]"
+                        className="relative mt-5 block w-full cursor-pointer rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground file:mr-4 file:cursor-pointer file:rounded-xl file:border-0 file:bg-primary file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-primary-foreground file:transition file:hover:opacity-90"
                       />
-                      <p className="mt-3 text-xs text-[var(--muted-foreground)]">
-                        A legjobb eredményhez használj jól olvasható, szöveges PDF-et.
-                      </p>
                     </div>
 
                     <div className="flex flex-wrap gap-3">
                       <button
                         type="submit"
                         disabled={uploading}
-                        className="rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-medium text-[var(--primary-foreground)] transition hover:opacity-90 disabled:opacity-60"
+                        className="rounded-2xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-90 disabled:opacity-60"
                       >
-                        {uploading ? "Feltöltés..." : "CV feltöltése / cseréje"}
+                        {uploading ? "Uploading..." : "Upload / replace resume"}
                       </button>
 
                       {cv && (
@@ -269,18 +280,18 @@ export default function SettingsPage() {
                             type="button"
                             onClick={parseCv}
                             disabled={parsing}
-                            className="rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--card-hover)] disabled:opacity-60"
+                            className="rounded-2xl border border-border bg-surface px-5 py-3 text-sm font-medium text-foreground transition hover:bg-surface-2 disabled:opacity-60"
                           >
-                            {parsing ? "AI elemzés..." : "AI CV parse"}
+                            {parsing ? "Parsing..." : "AI resume parse"}
                           </button>
 
                           <button
                             type="button"
                             onClick={deleteCv}
                             disabled={deleting}
-                            className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-700 transition hover:bg-red-500/15 dark:text-red-300 disabled:opacity-60"
+                            className="rounded-2xl border border-red-500/25 bg-red-500/10 px-5 py-3 text-sm font-medium text-red-800 transition hover:bg-red-500/15 dark:text-red-200 disabled:opacity-60"
                           >
-                            {deleting ? "Törlés..." : "CV törlése"}
+                            {deleting ? "Deleting..." : "Delete resume"}
                           </button>
                         </>
                       )}
@@ -288,93 +299,88 @@ export default function SettingsPage() {
                   </form>
 
                   {loading ? (
-                    <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-4 text-sm text-[var(--muted-foreground)]">
-                      Betöltés...
+                    <div className="mt-6 space-y-3 rounded-2xl border border-border bg-surface p-5">
+                      <div className="h-3 w-1/3 animate-pulse rounded-full bg-surface-2" />
+                      <div className="h-3 w-2/3 animate-pulse rounded-full bg-surface-2" />
+                      <div className="h-3 w-1/2 animate-pulse rounded-full bg-surface-2" />
+                      <p className="pt-2 text-xs text-muted-2">
+                        Loading resume data…
+                      </p>
                     </div>
                   ) : cv ? (
-                    <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                      <MiniInfoCard label="CV állapot" value="Feltöltve" />
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      <MiniInfoCard label="resume status" value="Uploaded" />
                       <MiniInfoCard
-                        label="Utolsó frissítés"
-                        value={new Date(cv.updatedAt).toLocaleString("hu-HU")}
+                        label="Last updated"
+                        value={new Date(cv.updatedAt).toLocaleString("en-US")}
                       />
                       <MiniInfoCard
-                        label="AI parse állapot"
-                        value={parsedCv ? "Elkészült" : "Még nincs"}
+                        label="AI parse status"
+                        value={parsedCv ? "Complete" : "Not yet"}
                       />
                       <MiniInfoCard
-                        label="AI parse frissítve"
+                        label="AI parse updated"
                         value={
                           cv.parsedUpdatedAt
-                            ? new Date(cv.parsedUpdatedAt).toLocaleString("hu-HU")
+                            ? new Date(cv.parsedUpdatedAt).toLocaleString("en-US")
                             : "—"
                         }
                       />
                     </div>
                   ) : (
-                    <EmptyState text="Még nincs feltöltött CV." className="mt-6" />
+                    <EmptyState
+                      text="No resume uploaded yet."
+                      className="mt-6"
+                    />
                   )}
 
                   {cv?.rawText && (
-                    <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-5">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]/85">
+                    <div className="mt-6 overflow-hidden rounded-[22px] border border-border bg-surface shadow-inner">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface-2/40 px-5 py-3">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-2">
                           CV preview
                         </p>
-                        <span className="rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1 text-[11px] text-[var(--muted-foreground)]">
-                          {cv.rawText.length.toLocaleString("hu-HU")} karakter
+                        <span className="rounded-full border border-border bg-background px-3 py-1 font-mono text-[11px] text-muted">
+                          {cv.rawText.length.toLocaleString("en-US")} chars
                         </span>
                       </div>
 
-                      <div className="mt-4 max-h-72 overflow-y-auto whitespace-pre-wrap rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm leading-7 text-[var(--soft-foreground)]">
+                      <div className="max-h-72 overflow-y-auto whitespace-pre-wrap p-5 text-sm leading-7 text-muted">
                         {cv.rawText.slice(0, 3000)}
-                        {cv.rawText.length > 3000 ? "..." : ""}
+                        {cv.rawText.length > 3000 ? "…" : ""}
                       </div>
                     </div>
                   )}
-                </section>
+                </SettingsSection>
 
-                <section
-                  className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6"
-                  style={{ boxShadow: "var(--shadow-soft)" }}
+                <SettingsSection
+                  eyebrow="Structured data"
+                  title="AI resume profile"
+                  description="Structured resume data produced by Gemini. This makes later AI analyses more accurate."
+                  badge={parsedCv ? "AI profile ready" : undefined}
+                  badgeTone="success"
                 >
-                  <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold">AI CV profil</h2>
-                      <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-                        A Gemini által struktúrált formában feldolgozott CV-adatok.
-                        Ezek a későbbi AI elemzéseket is pontosabbá teszik.
-                      </p>
-                    </div>
-
-                    {parsedCv && (
-                      <div className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-700 dark:text-emerald-300">
-                        AI profil készen áll
-                      </div>
-                    )}
-                  </div>
-
                   {!parsedCv ? (
                     <EmptyState
-                      text="Még nincs AI parse eredmény. Tölts fel egy CV-t, majd kattints az AI CV parse gombra."
+                      text="No AI parse yet. Upload a resume, then click AI resume parse."
                       className="mt-6"
                     />
                   ) : (
-                    <div className="mt-6 space-y-6">
-                      <div className="rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-5">
-                        <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]/85">
+                    <div className="mt-6 space-y-5">
+                      <div className="rounded-[22px] border border-border bg-surface p-5 sm:p-6">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-2">
                           Headline
                         </p>
-                        <p className="mt-3 text-lg font-medium text-[var(--foreground)]">
+                        <p className="mt-3 text-lg font-semibold leading-snug text-foreground">
                           {parsedCv.headline}
                         </p>
                       </div>
 
-                      <div className="rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-5">
-                        <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]/85">
+                      <div className="rounded-[22px] border border-border bg-surface p-5 sm:p-6">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-2">
                           Summary
                         </p>
-                        <p className="mt-3 text-sm leading-7 text-[var(--soft-foreground)]">
+                        <p className="mt-3 text-sm leading-relaxed text-muted">
                           {parsedCv.summary}
                         </p>
                       </div>
@@ -395,96 +401,27 @@ export default function SettingsPage() {
                       </div>
                     </div>
                   )}
-                </section>
-
-                <section
-                  className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6"
-                  style={{ boxShadow: "var(--shadow-soft)" }}
-                >
-                  <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold">Feature inventory</h2>
-                      <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-                        Gyors áttekintés arról, mi van már készen és min lehet még
-                        bővíteni.
-                      </p>
-                    </div>
-
-                    <div className="rounded-full border border-[var(--border)] bg-[var(--soft)] px-3 py-1 text-xs text-[var(--muted-foreground)]">
-                      Product overview
-                    </div>
-                  </div>
-
-                  <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <FeatureCard
-                      title="Auth (Credentials)"
-                      status="Kész"
-                      items={["Regisztráció", "Bejelentkezés", "JWT session"]}
-                    />
-                    <FeatureCard
-                      title="Jobs (lista + board)"
-                      status="Kész"
-                      items={[
-                        "Lista nézet szűréssel/rendezéssel",
-                        "Kanban board drag&drop státusz",
-                        "Új / szerkesztés / részletek",
-                      ]}
-                    />
-                    <FeatureCard
-                      title="Dashboard"
-                      status="Kész"
-                      items={[
-                        "Státusz statok",
-                        "Legutóbbi állások",
-                        "Közelgő eventek (megjelenítés)",
-                        "Aktivitás (status history)",
-                      ]}
-                    />
-                    <FeatureCard
-                      title="AI (Gemini)"
-                      status="Kész"
-                      items={[
-                        "CV parse",
-                        "Job summary",
-                        "Match score",
-                        "Cover letter",
-                      ]}
-                    />
-                    <FeatureCard
-                      title="Eventek (CRUD + naptár)"
-                      status="Fejlesztés alatt"
-                      items={[
-                        "Event létrehozás / szerkesztés / törlés",
-                        "Job detail integráció",
-                        "Naptár export (ICS)",
-                        "Külön /events nézet",
-                      ]}
-                    />
-                    <FeatureCard
-                      title="Extra workflow"
-                      status="Tervezve"
-                      items={[
-                        "Job parsing paste/URL-ből",
-                        "Tag-ek + export",
-                        "Interview prep",
-                      ]}
-                    />
-                  </div>
-                </section>
+                </SettingsSection>
               </div>
 
               <aside className="space-y-6">
-                <section
-                  className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 xl:sticky xl:top-24"
-                  style={{ boxShadow: "var(--shadow-soft)" }}
-                >
-                  <h2 className="text-xl font-semibold">AI funkciók</h2>
-                  <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
-                    Ezeket a funkciókat használja a projekt a CV és az állások
-                    intelligens feldolgozásához.
-                  </p>
+                <section className="sticky top-6 overflow-hidden rounded-[28px] border border-border bg-gradient-to-b from-surface to-background/80 p-6 shadow-lg ring-1 ring-black/[0.04] backdrop-blur-sm dark:from-surface dark:to-surface-2/30 dark:ring-white/[0.06] xl:top-24">
+                  <div className="flex items-start gap-3">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+                      <SparklesIcon className="size-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight">
+                        AI features
+                      </h2>
+                      <p className="mt-1 text-sm leading-relaxed text-muted-2">
+                        Capabilities that power intelligent processing of your
+                        resume and jobs.
+                      </p>
+                    </div>
+                  </div>
 
-                  <div className="mt-5 space-y-3">
+                  <div className="mt-5 space-y-2">
                     <FeatureItem title="CV upload & parsing" />
                     <FeatureItem title="AI CV profile extraction" />
                     <FeatureItem title="AI job summary" />
@@ -492,29 +429,25 @@ export default function SettingsPage() {
                     <FeatureItem title="AI cover letter" />
                   </div>
 
-                  <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]/85">
-                      Profil állapot
+                  <div className="mt-6 rounded-[20px] border border-border bg-surface-2/50 p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-2">
+                      Profile status
                     </p>
-                    <div className="mt-3 space-y-2 text-sm">
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[var(--muted-foreground)]">CV feltöltve</span>
-                        <span className="font-medium text-[var(--foreground)]">
-                          {cv ? "Igen" : "Nem"}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[var(--muted-foreground)]">AI parse</span>
-                        <span className="font-medium text-[var(--foreground)]">
-                          {parsedCv ? "Kész" : "Nincs"}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[var(--muted-foreground)]">Nyelvek</span>
-                        <span className="font-medium text-[var(--foreground)]">
-                          {parsedCv?.languages?.length ?? 0}
-                        </span>
-                      </div>
+                    <div className="mt-4 space-y-3 text-sm">
+                      <StatusRow
+                        label="resume uploaded"
+                        value={cv ? "Yes" : "No"}
+                        ok={Boolean(cv)}
+                      />
+                      <StatusRow
+                        label="AI parse"
+                        value={parsedCv ? "Ready" : "None"}
+                        ok={Boolean(parsedCv)}
+                      />
+                      <StatusRow
+                        label="Languages"
+                        value={String(parsedCv?.languages?.length ?? 0)}
+                      />
                     </div>
                   </div>
                 </section>
@@ -527,13 +460,138 @@ export default function SettingsPage() {
   );
 }
 
-function TopStat({ label, value }: { label: string; value: string }) {
+function CheckIcon({ className }: { className?: string }) {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)]/80 px-4 py-3">
-      <p className="text-[11px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]/80">
+    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+      <path
+        fillRule="evenodd"
+        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+function PdfIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 2v6h6M9 13h6M9 17h6M9 9h2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function SparklesIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.847a4.5 4.5 0 003.09 3.09L15.75 12l-2.847.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+    </svg>
+  );
+}
+
+function SettingsSection({
+  eyebrow,
+  title,
+  description,
+  badge,
+  badgeTone = "default",
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  badge?: string;
+  badgeTone?: "default" | "success";
+  children: React.ReactNode;
+}) {
+  const badgeClass =
+    badgeTone === "success"
+      ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200"
+      : "border-border bg-surface text-muted";
+
+  return (
+    <section className="overflow-hidden rounded-[28px] border border-border bg-gradient-to-br from-surface/90 via-background/30 to-surface-2/40 p-6 shadow-lg ring-1 ring-black/[0.04] dark:from-surface dark:via-surface-2/20 dark:to-surface dark:ring-white/[0.06] sm:p-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="max-w-xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-2">
+            {eyebrow}
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight">{title}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-2">{description}</p>
+        </div>
+        {badge ? (
+          <span
+            className={`shrink-0 self-start rounded-full border px-3 py-1 text-xs font-medium ${badgeClass}`}
+          >
+            {badge}
+          </span>
+        ) : null}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function StatusRow({
+  label,
+  value,
+  ok,
+}: {
+  label: string;
+  value: string;
+  ok?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/50 px-3 py-2.5">
+      <span className="text-muted-2">{label}</span>
+      <span className="flex items-center gap-2 font-medium text-foreground">
+        {ok !== undefined ? (
+          <span
+            className={`size-2 rounded-full ${ok ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" : "bg-muted-2"}`}
+          />
+        ) : null}
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function TopStat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "ok" | "muted" | "neutral";
+}) {
+  const ring =
+    tone === "ok"
+      ? "ring-emerald-500/20"
+      : tone === "muted"
+        ? "ring-border"
+        : "ring-primary/15";
+
+  return (
+    <div
+      className={`rounded-2xl border border-border bg-background/80 px-4 py-3 shadow-sm ring-1 backdrop-blur-sm ${ring}`}
+    >
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-2">
         {label}
       </p>
-      <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">
+      <p className="mt-1.5 text-sm font-semibold tabular-nums text-foreground">
         {value}
       </p>
     </div>
@@ -542,30 +600,30 @@ function TopStat({ label, value }: { label: string; value: string }) {
 
 function MiniInfoCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-4">
-      <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]/85">
+    <div className="rounded-2xl border border-border bg-surface-2/40 p-4 transition hover:border-primary/20">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-2">
         {label}
       </p>
-      <p className="mt-2 text-sm text-[var(--foreground)]">{value}</p>
+      <p className="mt-2 text-sm font-medium text-foreground">{value}</p>
     </div>
   );
 }
 
 function TagCard({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-5">
-      <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]/85">
+    <div className="rounded-[22px] border border-border bg-surface p-5 sm:p-6">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-2">
         {title}
       </p>
 
       {items.length === 0 ? (
-        <p className="mt-4 text-sm text-[var(--muted-foreground)]">Nincs adat.</p>
+        <p className="mt-4 text-sm text-muted-2">No data.</p>
       ) : (
         <div className="mt-4 flex flex-wrap gap-2">
           {items.map((item, index) => (
             <span
               key={index}
-              className="rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1 text-xs text-[var(--soft-foreground)]"
+              className="rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs font-medium text-muted shadow-sm"
             >
               {item}
             </span>
@@ -578,17 +636,20 @@ function TagCard({ title, items }: { title: string; items: string[] }) {
 
 function ListCard({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--soft)] p-5">
-      <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-foreground)]/85">
+    <div className="rounded-[22px] border border-border bg-surface p-5 sm:p-6">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-2">
         {title}
       </p>
 
       {items.length === 0 ? (
-        <p className="mt-4 text-sm text-[var(--muted-foreground)]">Nincs adat.</p>
+        <p className="mt-4 text-sm text-muted-2">No data.</p>
       ) : (
-        <ul className="mt-4 space-y-2 text-sm text-[var(--soft-foreground)]">
+        <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-muted">
           {items.map((item, index) => (
-            <li key={index}>• {item}</li>
+            <li key={index} className="flex gap-2.5">
+              <span className="mt-2 size-1 shrink-0 rounded-full bg-primary/50" />
+              <span>{item}</span>
+            </li>
           ))}
         </ul>
       )}
@@ -598,8 +659,9 @@ function ListCard({ title, items }: { title: string; items: string[] }) {
 
 function FeatureItem({ title }: { title: string }) {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--soft)] px-4 py-3 text-sm text-[var(--soft-foreground)]">
-      {title}
+    <div className="flex items-center gap-3 rounded-2xl border border-border bg-background/60 px-4 py-3 text-sm text-foreground transition hover:border-primary/25 hover:bg-surface">
+      <CheckIcon className="size-4 shrink-0 text-primary" />
+      <span>{title}</span>
     </div>
   );
 }
@@ -610,32 +672,35 @@ function FeatureCard({
   items,
 }: {
   title: string;
-  status: "Kész" | "Fejlesztés alatt" | "Tervezve";
+  status: "Done" | "In progress" | "Planned";
   items: string[];
 }) {
   const badgeClass =
-    status === "Kész"
-      ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-      : status === "Fejlesztés alatt"
-        ? "border-blue-500/20 bg-blue-500/10 text-blue-700 dark:text-blue-300"
-        : "border-[var(--border)] bg-[var(--soft)] text-[var(--muted-foreground)]";
+    status === "Done"
+      ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200"
+      : status === "In progress"
+        ? "border-sky-500/25 bg-sky-500/10 text-sky-900 dark:text-sky-200"
+        : "border-border bg-surface text-muted-2";
 
   return (
-    <div className="rounded-3xl border border-[var(--border)] bg-[var(--soft)] p-5 transition hover:bg-[var(--card-hover)]">
+    <div className="group rounded-[22px] border border-border bg-surface p-5 transition hover:border-primary/20 hover:shadow-md sm:p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-base font-semibold text-[var(--foreground)]">{title}</p>
+          <p className="text-base font-semibold text-foreground">{title}</p>
           <p
-            className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs ${badgeClass}`}
+            className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-medium ${badgeClass}`}
           >
             {status}
           </p>
         </div>
       </div>
 
-      <ul className="mt-4 space-y-2 text-sm text-[var(--soft-foreground)]">
+      <ul className="mt-4 space-y-2 text-sm text-muted">
         {items.map((item, index) => (
-          <li key={index}>• {item}</li>
+          <li key={index} className="flex gap-2.5">
+            <span className="mt-2 size-1 shrink-0 rounded-full bg-primary/40 transition group-hover:bg-primary" />
+            <span>{item}</span>
+          </li>
         ))}
       </ul>
     </div>
@@ -651,9 +716,12 @@ function EmptyState({
 }) {
   return (
     <div
-      className={`rounded-2xl border border-dashed border-[var(--border)] bg-[var(--soft)] p-4 text-sm text-[var(--muted-foreground)] ${className}`}
+      className={`flex items-center gap-3 rounded-[20px] border border-dashed border-border bg-surface-2/30 px-5 py-6 text-sm text-muted-2 ${className}`}
     >
-      {text}
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-background text-lg text-muted-2">
+        ∅
+      </span>
+      <span className="leading-relaxed">{text}</span>
     </div>
   );
 }

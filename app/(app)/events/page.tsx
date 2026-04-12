@@ -32,7 +32,7 @@ function sameDay(a: Date, b: Date) {
 }
 
 function formatMonthTitle(date: Date) {
-  return new Intl.DateTimeFormat("hu-HU", { year: "numeric", month: "long" }).format(
+  return new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long" }).format(
     date
   );
 }
@@ -76,13 +76,13 @@ export default function EventsPage() {
       );
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || "Nem sikerült betölteni az eventeket.");
+        setError(data?.error || "Failed to load events.");
         return;
       }
       setEvents(data);
     } catch (err) {
       console.error(err);
-      setError("Hiba történt az eventek betöltése közben.");
+      setError("Something went wrong while loading events.");
     } finally {
       setLoading(false);
     }
@@ -123,7 +123,7 @@ export default function EventsPage() {
   }
 
   async function deleteEvent(id: string) {
-    const confirmed = window.confirm("Biztosan törölni szeretnéd ezt az eventet?");
+    const confirmed = window.confirm("Delete this event?");
     if (!confirmed) return;
 
     const previous = events;
@@ -136,7 +136,7 @@ export default function EventsPage() {
     } catch (err) {
       console.error(err);
       setEvents(previous);
-      alert("Nem sikerült törölni az eventet.");
+      alert("Failed to delete the event.");
     }
   }
 
@@ -151,10 +151,10 @@ export default function EventsPage() {
                   Events
                 </div>
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Naptár és eventek
+                  Calendar & events
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-                  Interjúk, follow-upok és határidők átláthatóan, egy helyen.
+                  Interviews, follow-ups, and deadlines in one place.
                 </p>
               </div>
 
@@ -167,7 +167,7 @@ export default function EventsPage() {
                   }}
                   className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-slate-950 transition hover:opacity-90"
                 >
-                  + Új event
+                  + New event
                 </button>
               </div>
             </div>
@@ -178,7 +178,7 @@ export default function EventsPage() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                    Naptár
+                    Calendar
                   </p>
                   <h2 className="mt-2 text-2xl font-semibold">
                     {formatMonthTitle(month)}
@@ -202,7 +202,7 @@ export default function EventsPage() {
                     }}
                     className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:bg-white/10"
                   >
-                    Ma
+                    Today
                   </button>
                   <button
                     type="button"
@@ -215,7 +215,7 @@ export default function EventsPage() {
               </div>
 
               <div className="mt-6 grid grid-cols-7 gap-2 text-xs text-slate-400">
-                {["H", "K", "Sze", "Cs", "P", "Szo", "V"].map((d) => (
+                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
                   <div key={d} className="px-1 py-1 text-center">
                     {d}
                   </div>
@@ -266,7 +266,7 @@ export default function EventsPage() {
 
               {loading && (
                 <div className="mt-6 rounded-2xl border border-white/10 bg-slate-950/30 p-4 text-sm text-slate-400">
-                  Betöltés...
+                  Loading...
                 </div>
               )}
               {error && (
@@ -279,10 +279,10 @@ export default function EventsPage() {
             <aside className="space-y-4">
               <section className="rounded-3xl border border-white/10 bg-slate-900/30 p-6 xl:sticky xl:top-24">
                 <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                  Kiválasztott nap
+                  Selected day
                 </p>
                 <h2 className="mt-2 text-xl font-semibold">
-                  {new Intl.DateTimeFormat("hu-HU", {
+                  {new Intl.DateTimeFormat("en-US", {
                     weekday: "long",
                     year: "numeric",
                     month: "long",
@@ -293,7 +293,7 @@ export default function EventsPage() {
                 <div className="mt-5 space-y-3">
                   {selectedEvents.length === 0 ? (
                     <div className="rounded-2xl border border-dashed border-white/10 bg-slate-950/30 p-4 text-sm text-slate-400">
-                      Nincs event erre a napra.
+                      No events on this day.
                     </div>
                   ) : (
                     selectedEvents.map((ev) => (
@@ -305,7 +305,7 @@ export default function EventsPage() {
                           <div className="min-w-0">
                             <p className="font-medium text-white">{ev.title}</p>
                             <p className="mt-1 text-xs text-slate-400">
-                              {new Date(ev.startTime).toLocaleString("hu-HU")}
+                              {new Date(ev.startTime).toLocaleString("en-US")}
                             </p>
                             {ev.job ? (
                               <Link
@@ -341,14 +341,14 @@ export default function EventsPage() {
                             }}
                             className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition hover:bg-white/10"
                           >
-                            Szerkesztés
+                            Edit
                           </button>
                           <button
                             type="button"
                             onClick={() => deleteEvent(ev.id)}
                             className="rounded-2xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-300 transition hover:bg-red-500/15"
                           >
-                            Törlés
+                            Delete
                           </button>
                         </div>
                       </div>

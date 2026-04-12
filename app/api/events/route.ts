@@ -87,7 +87,7 @@ export async function POST(req: Request) {
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Érvénytelen adatok.", issues: parsed.error.issues },
+      { error: "Invalid request data.", issues: parsed.error.issues },
       { status: 400 }
     );
   }

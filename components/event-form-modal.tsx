@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 export type EventType = "Interview" | "TaskDeadline" | "FollowUp" | "Other";
 
@@ -55,6 +56,11 @@ export default function EventFormModal({
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -79,7 +85,7 @@ export default function EventFormModal({
   }, [open, initial]);
 
   const titleLabel = useMemo(() => {
-    return mode === "edit" ? "Event szerkesztése" : "Új event";
+    return mode === "edit" ? "Edit event" : "New event";
   }, [mode]);
 
   async function handleSubmit(e: FormEvent) {
@@ -113,7 +119,7 @@ export default function EventFormModal({
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || "Nem sikerült menteni az eventet.");
+        setError(data?.error || "Failed to save event.");
         return;
       }
 
@@ -121,7 +127,7 @@ export default function EventFormModal({
       onClose();
     } catch (err) {
       console.error(err);
-      setError("Hiba történt mentés közben.");
+      setError("Something went wrong while saving.");
     } finally {
       setSaving(false);
     }
@@ -129,7 +135,7 @@ export default function EventFormModal({
 
   async function handleDelete() {
     if (!initial?.id) return;
-    const confirmed = window.confirm("Biztosan törölni szeretnéd ezt az eventet?");
+    const confirmed = window.confirm("Delete this event?");
     if (!confirmed) return;
 
     setSaving(true);
@@ -138,38 +144,48 @@ export default function EventFormModal({
       const res = await fetch(`/api/events/${initial.id}`, { method: "DELETE" });
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || "Nem sikerült törölni az eventet.");
+        setError(data?.error || "Failed to delete event.");
         return;
       }
       onClose();
       // parent will refresh list via router.refresh() or local state update
     } catch (err) {
       console.error(err);
-      setError("Hiba történt törlés közben.");
+      setError("Something went wrong while deleting.");
     } finally {
       setSaving(false);
     }
   }
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-background/70 backdrop-blur-sm"
+  return createPortal(
+    <div className="fixed inset-0 z-[200] overflow-y-auto">
+      <button
+        type="button"
+        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        aria-label="Close dialog"
         onClick={onClose}
       />
-
-      <div className="relative w-full max-w-2xl overflow-hidden rounded-[28px] border border-border bg-background text-foreground shadow-2xl">
+      <div className="relative flex min-h-[100dvh] items-center justify-center p-4 pointer-events-none sm:p-6">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="event-modal-title"
+          className="pointer-events-auto relative w-full max-w-2xl overflow-hidden rounded-[28px] border border-border bg-background text-foreground shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
         <div className="border-b border-border bg-surface px-6 py-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-muted-2">
                 Events
               </p>
-              <h3 className="mt-2 text-xl font-semibold">{titleLabel}</h3>
+              <h3 id="event-modal-title" className="mt-2 text-xl font-semibold">
+                {titleLabel}
+              </h3>
               <p className="mt-1 text-sm text-muted-2">
-                Interjú, follow-up vagy határidő rögzítése.
+                Log an interview, follow-up, or deadline.
               </p>
             </div>
 
@@ -178,7 +194,7 @@ export default function EventFormModal({
               onClick={onClose}
               className="rounded-2xl border border-border bg-surface px-3 py-2 text-sm text-muted transition hover:bg-surface-2 hover:text-foreground"
             >
-              Bezárás
+              Close
             </button>
           </div>
         </div>
@@ -186,7 +202,7 @@ export default function EventFormModal({
         <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm text-muted">Típus</label>
+              <label className="mb-2 block text-sm text-muted">Type</label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as EventType)}
@@ -201,31 +217,31 @@ export default function EventFormModal({
 
             <div>
               <label className="mb-2 block text-sm text-muted">
-                Emlékeztető (perc)
+                Reminder (minutes before)
               </label>
               <input
                 value={reminderMinutesBefore}
                 onChange={(e) => setReminderMinutesBefore(e.target.value)}
                 inputMode="numeric"
-                placeholder="pl. 30"
+                placeholder="e.g. 30"
                 className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm text-muted">Cím</label>
+              <label className="mb-2 block text-sm text-muted">Title</label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                placeholder="pl. Tech interview – 1. kör"
+                placeholder="e.g. Technical interview – round 1"
                 className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div>
               <label className="mb-2 block text-sm text-muted">
-                Kezdés
+                Start
               </label>
               <input
                 type="datetime-local"
@@ -237,7 +253,7 @@ export default function EventFormModal({
 
             <div>
               <label className="mb-2 block text-sm text-muted">
-                Vége (opcionális)
+                End (optional)
               </label>
               <input
                 type="datetime-local"
@@ -249,19 +265,19 @@ export default function EventFormModal({
 
             <div>
               <label className="mb-2 block text-sm text-muted">
-                Helyszín (opcionális)
+                Location (optional)
               </label>
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="pl. Office / Zoom"
+                placeholder="e.g. Office / Zoom"
                 className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
               />
             </div>
 
             <div>
               <label className="mb-2 block text-sm text-muted">
-                Meeting link (opcionális)
+                Meeting link (optional)
               </label>
               <input
                 value={meetingLink}
@@ -273,19 +289,19 @@ export default function EventFormModal({
 
             <div className="md:col-span-2">
               <label className="mb-2 block text-sm text-muted">
-                Leírás / jegyzet (opcionális)
+                Description / notes (optional)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="min-h-[120px] w-full rounded-2xl border border-border bg-surface px-4 py-3 text-foreground outline-none placeholder:text-muted-2 focus:ring-2 focus:ring-primary/25"
-                placeholder="Agenda, teendők, kérdések..."
+                placeholder="Agenda, action items, questions..."
               />
             </div>
           </div>
 
           {error && (
-            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
               {error}
             </div>
           )}
@@ -298,7 +314,7 @@ export default function EventFormModal({
                 disabled={saving}
                 className="rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-red-500 disabled:opacity-60"
               >
-                Törlés
+                Delete
               </button>
             ) : (
               <span />
@@ -309,12 +325,14 @@ export default function EventFormModal({
               disabled={saving}
               className="rounded-2xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
             >
-              {saving ? "Mentés..." : "Mentés"}
+              {saving ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

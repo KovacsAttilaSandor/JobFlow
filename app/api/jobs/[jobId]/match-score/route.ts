@@ -1,6 +1,11 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { gemini } from "@/lib/gemini";
+import {
+  aiOutputLanguagePromptRule,
+  getAiOutputLanguageFromRequest,
+} from "@/lib/ai-output-language";
+import { isAiRegenerateRequest } from "@/lib/is-ai-regenerate-request";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -11,7 +16,7 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 kérés / perc / user
+  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 request / min / user
 });
 
 const matchScoreSchema = z.object({
@@ -130,35 +135,29 @@ export async function POST(
       },
     });
 
-    if (existingMatch) {
+    const regenerate = isAiRegenerateRequest(req);
+    const outputLang = getAiOutputLanguageFromRequest(req);
+
+    if (!regenerate && existingMatch) {
       try {
-        const cached = {
-          score: existingMatch.score,
-          summary: existingMatch.summary,
-          strengths: JSON.parse(existingMatch.strengths),
-          gaps: JSON.parse(existingMatch.gaps),
-        };
+        const cachedLang = existingMatch.outputLanguage ?? "en";
+        if (cachedLang === outputLang) {
+          const cached = {
+            score: existingMatch.score,
+            summary: existingMatch.summary,
+            strengths: JSON.parse(existingMatch.strengths),
+            gaps: JSON.parse(existingMatch.gaps),
+          };
 
-        const validatedCached = matchScoreSchema.safeParse(cached);
+          const validatedCached = matchScoreSchema.safeParse(cached);
 
-        if (validatedCached.success) {
-          return NextResponse.json(validatedCached.data);
+          if (validatedCached.success) {
+            return NextResponse.json(validatedCached.data);
+          }
         }
       } catch (error) {
         console.error("MATCH_SCORE_CACHE_PARSE_ERROR:", error);
       }
-    }
-
-    const cooldown = 30 * 1000;
-
-    if (
-      existingMatch?.createdAt &&
-      Date.now() - existingMatch.createdAt.getTime() < cooldown
-    ) {
-      return NextResponse.json(
-        { error: "Please wait before regenerating." },
-        { status: 429 }
-      );
     }
 
     let parsedCv: ParsedCvProfile | null = null;
@@ -199,6 +198,8 @@ ${parsedCv.highlights?.length ? `- ${parsedCv.highlights.join("\n- ")}` : "N/A"}
 `
       : "STRUCTURED CV PROFILE: Not available.";
 
+    const langRule = aiOutputLanguagePromptRule(outputLang);
+
     const prompt = `
 You are evaluating how well a candidate CV matches a job description.
 
@@ -220,7 +221,7 @@ Rules:
 - prefer the structured CV profile when available
 - use the raw CV text as supporting context
 - be realistic and do not invent experience
-- language: hungarian
+- ${langRule}
 
 JOB DESCRIPTION:
 ${job.description}
@@ -282,6 +283,7 @@ ${cv.rawText}
         summary: parsed.data.summary,
         strengths: JSON.stringify(parsed.data.strengths),
         gaps: JSON.stringify(parsed.data.gaps),
+        outputLanguage: outputLang,
       },
     });
 

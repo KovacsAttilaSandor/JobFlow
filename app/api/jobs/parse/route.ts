@@ -11,7 +11,7 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 kérés / perc / user
+  limiter: Ratelimit.slidingWindow(1, "1 m"), // 1 request / min / user
 });
 
 const requestSchema = z.object({
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
       body = await req.json();
     } catch {
       return NextResponse.json(
-        { error: "Érvénytelen JSON kérés." },
+        { error: "Invalid JSON body." },
         { status: 400 }
       );
     }
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
 
     if (!parsedReq.success) {
       return NextResponse.json(
-        { error: "Érvénytelen adatok.", issues: parsedReq.error.issues },
+        { error: "Invalid request data.", issues: parsedReq.error.issues },
         { status: 400 }
       );
     }
@@ -127,7 +127,7 @@ Rules:
 - description: return a cleaned, readable version of the ad text (keep sections, remove boilerplate if obvious).
 - no markdown
 - no extra text before or after the JSON
-- language: Hungarian (field values can be original language)
+- language: English (field values in English when possible; keep original language for proper nouns)
 
 JOB URL (optional):
 ${jobUrl || "N/A"}
